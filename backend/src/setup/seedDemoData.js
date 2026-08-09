@@ -21,7 +21,15 @@ async function seedMassiveData() {
 
     // 1. Ensure Super Admin
     let superAdmin = await Admin.findOne({ email: 'admin@admin.com' });
-    if (superAdmin) {
+    if (!superAdmin) {
+      superAdmin = await new Admin({
+        email: 'admin@admin.com',
+        name: 'MyCRM',
+        surname: 'Admin',
+        enabled: true,
+        role: 'owner',
+      }).save();
+    } else {
       superAdmin.name = 'MyCRM';
       superAdmin.surname = 'Admin';
       superAdmin.role = 'owner';
@@ -234,8 +242,8 @@ async function seedMassiveData() {
     const clients = await Client.insertMany(
       clientData.map((c) => ({
         ...c,
-        createdBy: admin._id,
-        assigned: admin._id,
+        createdBy: superAdmin._id,
+        assigned: superAdmin._id,
         enabled: true,
         removed: false,
       }))
@@ -542,13 +550,13 @@ async function seedMassiveData() {
         tmpl.paymentStatus === 'paid'
           ? tmpl.total
           : tmpl.paymentStatus === 'partially'
-          ? tmpl.paidAmount || tmpl.total / 2
-          : 0;
+            ? tmpl.paidAmount || tmpl.total / 2
+            : 0;
 
       const newInv = await new Invoice({
         number: invNumber,
         year: currentYear,
-        createdBy: admin._id,
+        createdBy: superAdmin._id,
         client: client._id,
         date: invDate,
         expiredDate: dueDate,
@@ -571,7 +579,7 @@ async function seedMassiveData() {
         const mode = paymentModes[i % paymentModes.length];
         const newPayment = await new Payment({
           number: paymentCounter++,
-          createdBy: admin._id,
+          createdBy: superAdmin._id,
           client: client._id,
           invoice: newInv._id,
           date: new Date(invDate.getTime() + 2 * 24 * 60 * 60 * 1000),
@@ -719,7 +727,7 @@ async function seedMassiveData() {
       const newQuote = await new Quote({
         number: qNumber,
         year: currentYear,
-        createdBy: admin._id,
+        createdBy: superAdmin._id,
         client: client._id,
         date: qDate,
         expiredDate: qExpire,
