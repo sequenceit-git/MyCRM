@@ -1,101 +1,144 @@
 <div align="center">
-    <a href="https://www.idurarapp.com/">
-  <img src="https://avatars.githubusercontent.com/u/50052356?s=200&v=4" width="128px" />
-    </a>
-    <h1>Open Source ERP / CRM Accounting Invoice Quote</h1>
-    <p align="center">
-        <p>IDURAR ERP CRM | Simple To Use</p>
-    </p>
-    
-
-```
- Give a Star ⭐️ & Fork to this project ... Happy coding! 🤩`
-```
-
-IDURAR is Open Source ERP / CRM (Invoice / Quote / Accounting ) Based on Advanced Mern Stack (Node.js / Express.js / MongoDb / React.js ) with Ant Design (AntD) and Redux
-
+  <h1>💼 MyCRM</h1>
+  <p><b>Cloud ERP & CRM Business Management Platform</b></p>
+  <p>
+    <a href="https://mycrm.sequenceit.software">Live Application</a> •
+    <a href="#-quick-start">Quick Start</a> •
+    <a href="#-traefik--docker-deployment">Docker & Traefik Deployment</a>
+  </p>
 </div>
 
-**🚀 Self-hosted Entreprise Version** : [https://cloud.idurarapp.com](https://cloud.idurarapp.com)
+---
 
+## 🌟 Overview
 
+**MyCRM** is an all-in-one Cloud ERP & CRM management platform built on the modern MERN stack (**Node.js, Express, MongoDB, React, Redux, Ant Design**). It features a clean, elevated UI design with soft rounded cards (`#f0f5fa` canvas), interactive dashboard filters, section-wise skeleton loading, role-based permissions (Super Admin vs Guest View-Only), and single-command Docker deployment with **Traefik**.
 
-## Features :
+Hosted Domain: **[https://mycrm.sequenceit.software](https://mycrm.sequenceit.software)**  
+Git Repository: **[https://github.com/sequenceit-git/MyCRM.git](https://github.com/sequenceit-git/MyCRM.git)**
 
-Invoice Management
+---
 
-Payment Management
+## ✨ Features
 
-Quote Management
+- 📊 **Interactive Dashboard**:
+  - **KPI Summary Cards**: Real-time totals for *Paid Invoices*, *Unpaid Invoices*, *Total Invoiced*, and *Quotes*.
+  - **Date Range Filters**: Filter summary metrics by *Yesterday*, *Last Week*, *Last Month*, *Last Year*, or *From Beginning*.
+  - **Performance Progress Bars**: Status breakdowns for Invoices, Quotes, and Collection & Revenue rates.
+  - **Circular Customer Gauge**: Active customer growth percentage and total counts.
+  - **Recent Activity Tables**: Quick access to recent invoices and quotes with single-click PDF downloads.
 
-Customer Management
+- 👥 **Customer Relationship Management (CRM)**:
+  - Manage client profiles, addresses, phone numbers, and email contacts.
 
-Ant Design Framework(AntD) 🐜
+- 📄 **Invoicing & Quote Management**:
+  - Full CRUD lifecycle for **Invoices** and **Proforma Quotes**.
+  - Integrated PDF generation, instant payment recording, and status tagging (*Draft, Sent, Pending, Paid, Partially Paid, Overdue, Accepted, Declined*).
 
-Based on Mern Stack (Node.js / Express.js / MongoDb / React.js ) 👨‍💻
+- 💳 **Payments & Tax Settings**:
+  - Payment modes management (Bank Transfer, Credit Card, PayPal, Cash).
+  - Tax rates configuration and automatic calculation on items.
 
-### May i can use IDURAR for Commercial use :
+- ⚡ **Seamless Skeleton Loading System**:
+  - Persistent sidebar and header navigation.
+  - Section-wise and field-level **Skeleton Shimmer Loaders** during data fetching without full-page flickering.
 
-- Yes You can use IDURAR for free for personal or Commercial use.
+- 🔐 **Role-Based Access Control (RBAC)**:
+  - **Super Admin**: Full read/write/edit access.
+  - **Guest Admin**: View-Only mode with visual indicator pills and read-only form protections.
 
-## Our Sponsors
+---
 
-  <a href="https://m.do.co/c/4ead8370b905?ref=idurarapp.com">
-    <img src="https://opensource.nyc3.cdn.digitaloceanspaces.com/attribution/assets/PoweredByDO/DO_Powered_by_Badge_blue.svg" width="201px">
-  </a>
+## 🛠️ Technology Stack
 
-#
+- **Frontend**: React.js, Vite, Ant Design (AntD v5), Redux Toolkit / React Redux, Custom CSS Tokens.
+- **Backend**: Node.js, Express.js, MongoDB (Mongoose ORM), JWT Authentication, HTML-PDF generator.
+- **Deployment**: Docker, Docker Compose, Traefik Reverse Proxy (SSL/TLS ready).
 
-<img width="1403" alt="Open Source ERP CRM" src="https://github.com/idurar/idurar-erp-crm/assets/136928179/a6712286-7ca6-4822-8902-fb7523533ee8">
+---
 
-## Free Open Source ERP / CRM App
+## ⚡ Quick Start (Local Development)
 
-IDURAR is Open "Fair-Code" Source ERP / CRM (Invoice / Inventory / Accounting / HR) Based on Mern Stack (Node.js / Express.js / MongoDb / React.js ) with Ant Design (AntD) and Redux
+### Prerequisites
+- Node.js (v18 or v20)
+- MongoDB server running locally or MongoDB Atlas connection string.
 
+### 1. Clone Repository
+```bash
+git clone https://github.com/sequenceit-git/MyCRM.git
+cd MyCRM
+```
 
-## Getting started
+### 2. Backend Setup
+```bash
+cd backend
+npm install
 
-1.[Clone the repository](INSTALLATION-INSTRUCTIONS.md#step-1-clone-the-repository)
+# Create .env file with database connection & secret keys
+cat <<EOT > .env
+PORT=8888
+DATABASE=mongodb://127.0.0.1:27017/idurar
+SECRET=mycrm_super_secret_jwt_key_2026
+JWT_SECRET=mycrm_jwt_secret_token_2026
+NODE_ENV=development
+EOT
 
-2.[Create Your MongoDB Account and Database Cluster](INSTALLATION-INSTRUCTIONS.md#Step-2-Create-Your-MongoDB-Account-and-Database-Cluster)
+# Initialize database collections & seed demo data
+npm run setup
+npm run seed
+npm run setup-guest
 
-3.[Edit the Environment File](INSTALLATION-INSTRUCTIONS.md#Step-3-Edit-the-Environment-File)
+# Start backend dev server
+npm run dev
+```
 
-4.[Update MongoDB URI](INSTALLATION-INSTRUCTIONS.md#Step-4-Update-MongoDB-URI)
+### 3. Frontend Setup
+```bash
+# In a new terminal window:
+cd frontend
+npm install
 
-5.[Install Backend Dependencies](INSTALLATION-INSTRUCTIONS.md#Step-5-Install-Backend-Dependencies)
+# Start frontend dev server (runs at http://localhost:3000)
+npm run dev
+```
 
-6.[Run Setup Script](INSTALLATION-INSTRUCTIONS.md#Step-6-Run-Setup-Script)
+---
 
-7.[Run the Backend Server](INSTALLATION-INSTRUCTIONS.md#Step-7-Run-the-Backend-Server)
+## 🐳 Traefik & Docker Deployment
 
-8.[Install Frontend Dependencies](INSTALLATION-INSTRUCTIONS.md#Step-8-Install-Frontend-Dependencies)
+Deploy to your production VPS with **Traefik** routing for `mycrm.sequenceit.software` in a single command.
 
-9.[Run the Frontend Server](INSTALLATION-INSTRUCTIONS.md#Step-9-Run-the-Frontend-Server)
+### 1. Deploy on Server
+```bash
+# Clone on server
+git clone https://github.com/sequenceit-git/MyCRM.git
+cd MyCRM
 
-## Contributing
+# Ensure Traefik network exists
+docker network create proxy || true
 
-1.[How to contribute](https://github.com/idurar/idurar-erp-crm/blob/master/CONTRIBUTING.md#how-to-contribute)
+# Build & launch app and MongoDB containers
+docker compose up -d --build
+```
 
-2.[Reporting issues](https://github.com/idurar/idurar-erp-crm/blob/master/CONTRIBUTING.md#reporting-issues)
+### 2. Initialize Seed Data on Server
+```bash
+docker exec -it mycrm-app npm run setup
+docker exec -it mycrm-app npm run seed
+docker exec -it mycrm-app npm run setup-guest
+```
 
-3.[Working on issues ](https://github.com/idurar/idurar-erp-crm/blob/master/CONTRIBUTING.md#working-on-issues)
+---
 
-4.[Submitting pull requests](https://github.com/idurar/idurar-erp-crm/blob/master/CONTRIBUTING.md#submitting-pull-requests)
+## 🔑 Default Admin Logins
 
-5.[Commit Guidelines](https://github.com/idurar/idurar-erp-crm/blob/master/CONTRIBUTING.md#commit-guidelines)
+| Role | Email | Password | Access Level |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `admin@admin.com` | `admin123` | Full Access (Create/Read/Update/Delete) |
+| **Guest Admin** | `guest@admin.com` | `guest123` | View-Only Mode |
 
-6.[Coding Guidelines](https://github.com/idurar/idurar-erp-crm/blob/master/CONTRIBUTING.md#coding-guidelines)
+---
 
-7.[Questions](https://github.com/idurar/idurar-erp-crm/blob/master/CONTRIBUTING.md#questions)
+## 📄 License
 
-
-## Show your support
-
-Dont forget to give a ⭐️ to this project ... Happy coding!
-
-**🚀 Self-hosted Entreprise Version** : [https://cloud.idurarapp.com](https://cloud.idurarapp.com)
-
-## License
-
-IDURAR is Free Open Source Released under the GNU Affero General Public License v3.0.
+Released under the **MIT License**.
