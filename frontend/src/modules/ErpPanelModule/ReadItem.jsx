@@ -130,9 +130,9 @@ export default function ReadItem({ config, selectedItem }) {
           navigate(`/${entity.toLowerCase()}`);
         }}
         title={`${ENTITY_NAME} # ${currentErp.number}/${currentErp.year || ''}`}
-        ghost={false}
+        ghost={true}
         tags={[
-          <span key="status">{currentErp.status && translate(currentErp.status)}</span>,
+          <Tag color="blue" key="status">{currentErp.status && translate(currentErp.status)}</Tag>,
           currentErp.paymentStatus && (
             <span key="paymentStatus">
               {currentErp.paymentStatus && translate(currentErp.paymentStatus)}

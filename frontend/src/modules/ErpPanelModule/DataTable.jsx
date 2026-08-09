@@ -38,6 +38,8 @@ function AddNewItem({ config }) {
   );
 }
 
+import TableSkeleton from '@/components/TableSkeleton';
+
 export default function DataTable({ config, extra = [] }) {
   const translate = useLanguage();
   let { entity, dataTableColumns, disableAdd = false, searchConfig } = config;
@@ -186,9 +188,6 @@ export default function DataTable({ config, extra = [] }) {
             displayLabels={['name']}
             searchFields={'name'}
             onChange={filterTable}
-            // redirectLabel={'Add New Client'}
-            // withRedirect
-            // urlToRedirect={'/customer'}
           />,
           <Button onClick={handelDataTableLoad} key="refresh-button" icon={<RedoOutlined />}>
             {translate('Refresh')}
@@ -197,19 +196,22 @@ export default function DataTable({ config, extra = [] }) {
           !disableAdd && <AddNewItem config={config} key="add-new-item" />,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '0 0 20px 0',
         }}
       ></PageHeader>
 
-      <Table
-        columns={dataTableColumns}
-        rowKey={(item) => item._id}
-        dataSource={dataSource}
-        pagination={pagination}
-        loading={listIsLoading}
-        onChange={handelDataTableLoad}
-        scroll={{ x: true }}
-      />
+      {listIsLoading ? (
+        <TableSkeleton rows={8} />
+      ) : (
+        <Table
+          columns={dataTableColumns}
+          rowKey={(item) => item._id}
+          dataSource={dataSource}
+          pagination={pagination}
+          onChange={handelDataTableLoad}
+          scroll={{ x: true }}
+        />
+      )}
     </>
   );
 }

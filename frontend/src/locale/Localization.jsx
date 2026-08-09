@@ -5,9 +5,9 @@ export default function Localization({ children }) {
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#339393',
-          colorLink: '#1640D6',
-          borderRadius: 0,
+          colorPrimary: '#1677ff',
+          colorLink: '#1677ff',
+          borderRadius: 6,
         },
       }}
     >

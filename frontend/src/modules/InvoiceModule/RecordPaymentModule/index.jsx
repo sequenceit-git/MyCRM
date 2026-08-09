@@ -1,12 +1,27 @@
 import { ErpLayout } from '@/layout';
-
-import PageLoader from '@/components/PageLoader';
+import { Skeleton, Row, Col } from 'antd';
 import { erp } from '@/redux/erp/actions';
-import { selectItemById, selectCurrentItem, selectRecordPaymentItem } from '@/redux/erp/selectors';
+import { selectItemById, selectCurrentItem } from '@/redux/erp/selectors';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Payment from './components/Payment';
+
+const PaymentSectionSkeleton = () => (
+  <div>
+    <Skeleton.Input active style={{ width: 180, height: 28, marginBottom: 20 }} />
+    <Row gutter={[24, 24]}>
+      <Col xs={24} sm={12}>
+        <Skeleton.Input active style={{ width: '100%', height: 38, marginBottom: 16 }} />
+        <Skeleton.Input active style={{ width: '100%', height: 38, marginBottom: 16 }} />
+      </Col>
+      <Col xs={24} sm={12}>
+        <Skeleton.Input active style={{ width: '100%', height: 38, marginBottom: 16 }} />
+        <Skeleton.Input active style={{ width: '100%', height: 38, marginBottom: 16 }} />
+      </Col>
+    </Row>
+  </div>
+);
 
 export default function RecordPaymentModule({ config }) {
   const dispatch = useDispatch();
@@ -31,7 +46,7 @@ export default function RecordPaymentModule({ config }) {
 
   return (
     <ErpLayout>
-      {item ? <Payment config={config} currentItem={currentResult} /> : <PageLoader />}
+      {item ? <Payment config={config} currentItem={currentResult} /> : <PaymentSectionSkeleton />}
     </ErpLayout>
   );
 }

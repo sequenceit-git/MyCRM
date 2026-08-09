@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons';
 import { Dropdown, Table, Button, Input } from 'antd';
 import { PageHeader } from '@ant-design/pro-layout';
+import TableSkeleton from '@/components/TableSkeleton';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { crud } from '@/redux/crud/actions';
@@ -181,13 +182,14 @@ export default function DataTable({ config, extra = [] }) {
         onBack={() => window.history.back()}
         backIcon={<ArrowLeftOutlined />}
         title={DATATABLE_TITLE}
-        ghost={false}
+        ghost={true}
         extra={[
           <Input
             key={`searchFilterDataTable}`}
             onChange={filterTable}
             placeholder={translate('search')}
             allowClear
+            style={{ width: '220px' }}
           />,
           <Button onClick={handelDataTableLoad} key={`${uniqueId()}`} icon={<RedoOutlined />}>
             {translate('Refresh')}
@@ -196,19 +198,22 @@ export default function DataTable({ config, extra = [] }) {
           <AddNewItem key={`${uniqueId()}`} config={config} />,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '0 0 20px 0',
         }}
       ></PageHeader>
 
-      <Table
-        columns={dataTableColumns}
-        rowKey={(item) => item._id}
-        dataSource={dataSource}
-        pagination={pagination}
-        loading={listIsLoading}
-        onChange={handelDataTableLoad}
-        scroll={{ x: true }}
-      />
+      {listIsLoading ? (
+        <TableSkeleton rows={8} />
+      ) : (
+        <Table
+          columns={dataTableColumns}
+          rowKey={(item) => item._id}
+          dataSource={dataSource}
+          pagination={pagination}
+          onChange={handelDataTableLoad}
+          scroll={{ x: true }}
+        />
+      )}
     </>
   );
 }

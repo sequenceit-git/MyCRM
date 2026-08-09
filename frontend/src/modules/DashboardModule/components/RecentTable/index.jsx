@@ -10,6 +10,8 @@ import useLanguage from '@/locale/useLanguage';
 import { useNavigate } from 'react-router-dom';
 import { DOWNLOAD_BASE_URL } from '@/config/serverApiConfig';
 
+import TableSkeleton from '@/components/TableSkeleton';
+
 export default function RecentTable({ ...props }) {
   const translate = useLanguage();
   let { entity, dataTableColumns } = props;
@@ -93,13 +95,14 @@ export default function RecentTable({ ...props }) {
     return [];
   };
 
-  return (
+  return isLoading ? (
+    <TableSkeleton rows={5} />
+  ) : (
     <Table
       columns={dataTableColumns}
       rowKey={(item) => item._id}
       dataSource={isSuccess && firstFiveItems()}
       pagination={false}
-      loading={isLoading}
       scroll={{ x: true }}
     />
   );

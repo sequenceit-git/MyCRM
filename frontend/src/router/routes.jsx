@@ -1,29 +1,30 @@
-import { lazy } from 'react';
-
 import { Navigate } from 'react-router-dom';
 
-const Logout = lazy(() => import('@/pages/Logout.jsx'));
-const NotFound = lazy(() => import('@/pages/NotFound.jsx'));
+import Logout from '@/pages/Logout.jsx';
+import NotFound from '@/pages/NotFound.jsx';
 
+import Dashboard from '@/pages/Dashboard';
+import Customer from '@/pages/Customer';
+import Invoice from '@/pages/Invoice';
+import InvoiceCreate from '@/pages/Invoice/InvoiceCreate';
+import InvoiceRead from '@/pages/Invoice/InvoiceRead';
+import InvoiceUpdate from '@/pages/Invoice/InvoiceUpdate';
+import InvoiceRecordPayment from '@/pages/Invoice/InvoiceRecordPayment';
 
-const Customer = lazy(() => import('@/pages/Customer'));
-const Invoice = lazy(() => import('@/pages/Invoice'));
-const InvoiceCreate = lazy(() => import('@/pages/Invoice/InvoiceCreate'));
+import Quote from '@/pages/Quote';
+import QuoteCreate from '@/pages/Quote/QuoteCreate';
+import QuoteRead from '@/pages/Quote/QuoteRead';
+import QuoteUpdate from '@/pages/Quote/QuoteUpdate';
 
-const InvoiceRead = lazy(() => import('@/pages/Invoice/InvoiceRead'));
-const InvoiceUpdate = lazy(() => import('@/pages/Invoice/InvoiceUpdate'));
-const InvoiceRecordPayment = lazy(() => import('@/pages/Invoice/InvoiceRecordPayment'));
+import Payment from '@/pages/Payment/index';
+import PaymentRead from '@/pages/Payment/PaymentRead';
+import PaymentUpdate from '@/pages/Payment/PaymentUpdate';
+import PaymentMode from '@/pages/PaymentMode';
 
-const Payment = lazy(() => import('@/pages/Payment/index'));
-const PaymentRead = lazy(() => import('@/pages/Payment/PaymentRead'));
-const PaymentUpdate = lazy(() => import('@/pages/Payment/PaymentUpdate'));
-
-const Settings = lazy(() => import('@/pages/Settings/Settings'));
-
-
-const Profile = lazy(() => import('@/pages/Profile'));
-
-const About = lazy(() => import('@/pages/About'));
+import Taxes from '@/pages/Taxes';
+import Settings from '@/pages/Settings/Settings';
+import Profile from '@/pages/Profile';
+import About from '@/pages/About';
 
 let routes = {
   expense: [],
@@ -42,7 +43,11 @@ let routes = {
     },
     {
       path: '/',
-      element: <Invoice />,
+      element: <Dashboard />,
+    },
+    {
+      path: '/dashboard',
+      element: <Dashboard />,
     },
     {
       path: '/customer',

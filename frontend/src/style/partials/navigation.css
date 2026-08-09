@@ -1,26 +1,82 @@
 .navigation {
   position: sticky;
   height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
   top: 0;
   left: 0;
   z-index: 1000;
-  background: #fff;
-  border-right: 1px solid #edf0f5;
+  background: #ffffff;
+  border-right: 1px solid #edf2f7;
+  overflow: hidden;
 }
 
-.logo {
-  height: 45px;
-  margin: 15px 15px 30px 30px;
+.navigation .ant-layout-sider-children {
   display: flex;
-  justify-content: space-evenly;
-  width: 160px;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.navigation .ant-layout-sider-children::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+  width: 0;
+  height: 0;
 }
 
 .sidebar-wraper {
-  background: #fff;
+  background: #ffffff;
   display: block;
+}
+
+.navigation .ant-menu {
+  background: transparent !important;
+  border-right: none !important;
+  padding: 0 10px !important;
+  width: 100% !important;
+}
+
+.navigation .ant-menu-item {
+  height: 42px !important;
+  line-height: 42px !important;
+  margin: 4px 0 !important;
+  padding: 0 14px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  color: #1f2937 !important;
+  transition: all 0.2s ease !important;
+}
+
+.navigation .ant-menu-item .anticon {
+  font-size: 16px !important;
+  color: #1f2937 !important;
+}
+
+.navigation .ant-menu-item:hover {
+  background: #f1f5f9 !important;
+  color: #111827 !important;
+}
+
+.navigation .ant-menu-item-selected {
+  background: #e8f0fe !important;
+  color: #1a56db !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+}
+
+.navigation .ant-menu-item-selected a {
+  color: #1a56db !important;
+  font-weight: 700 !important;
+}
+
+.navigation .ant-menu-item-selected .anticon {
+  color: #1a56db !important;
+}
+
+.navigation .ant-menu-item-selected::after {
+  display: none !important;
 }
 
 .mobile-sidebar-wraper {
@@ -31,19 +87,6 @@
   padding: 12px 0px !important;
 }
 
-/* .ant-btn.mobile-sidebar-btn {
-  display: none;
-} */
-
-.tabsNavigation span {
-  background-color: transparent;
-}
-
-.tabsNavigation:hover span {
-  box-shadow: 0px 0px 30px 8px rgba(0, 115, 255, 0.15);
-  background-color: transparent;
-}
-
 @media only screen and (max-width: 768px) {
   .sidebar-wraper {
     display: none;
@@ -52,12 +95,6 @@
   .navigation {
     height: 100%;
   }
-
-  /* .ant-btn.mobile-sidebar-btn {
-    display: block;
-    position: absolute;
-    top: 21px;
-  } */
 
   .mobile-sidebar-wraper {
     display: block;

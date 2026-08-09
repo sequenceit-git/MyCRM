@@ -1,36 +1,32 @@
-import { Button, Result } from 'antd';
-
+import { Result } from 'antd';
 import useLanguage from '@/locale/useLanguage';
 
 const About = () => {
   const translate = useLanguage();
   return (
-    <Result
-      status="info"
-      title={'IDURAR'}
-      subTitle={translate('Do you need help on customize of this app')}
-      extra={
-        <>
-          <p>
-            Website : <a href="https://www.idurarapp.com">www.idurarapp.com</a>{' '}
-          </p>
-          <p>
-            GitHub :{' '}
-            <a href="https://github.com/idurar/idurar-erp-crm">
-              https://github.com/idurar/idurar-erp-crm
-            </a>
-          </p>
-          <Button
-            type="primary"
-            onClick={() => {
-              window.open(`https://www.idurarapp.com/contact-us/`);
-            }}
-          >
-            {translate('Contact us')}
-          </Button>
-        </>
-      }
-    />
+    <div
+      style={{
+        background: '#ffffff',
+        borderRadius: '12px',
+        border: '1px solid #edf2f7',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.03)',
+        padding: '40px 24px',
+        maxWidth: '800px',
+        margin: '0 auto',
+      }}
+    >
+      <Result
+        status="info"
+        title={'MyCRM'}
+        subTitle={translate('Cloud ERP & CRM Management Platform')}
+        extra={
+          <div style={{ color: '#4b5563', fontSize: '14px', lineHeight: '1.8' }}>
+            <p style={{ margin: 0, fontWeight: '600' }}>Version : 1.0.0</p>
+            <p style={{ margin: 0 }}>All-in-one Business Management & Invoicing Solution</p>
+          </div>
+        }
+      />
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 {
-  "name": "idurar-erp-crm",
-  "version": "4.1.0",
+  "name": "mycrm",
+  "version": "1.0.0",
   "engines": {
     "npm": "10.2.4",
     "node": "20.9.0"
@@ -10,6 +10,9 @@
     "dev": "nodemon src/server.js --ignore public/",
     "production": "NODE_ENV=production",
     "setup": "node src/setup/setup.js",
+    "setup-guest": "node src/setup/createGuestAdmin.js",
+    "seed": "node src/setup/seedDemoData.js",
+    "update-admin": "node src/setup/updateAdmin.js",
     "upgrade": "node src/setup/upgrade.js",
     "reset": "node src/setup/reset.js"
   },
@@ -47,16 +50,8 @@
   "_moduleAliases": {
     "@": "src"
   },
-  "main": "server.js",
-  "author": "IDURAR",
-  "email": "hello@idurarapp.com",
-  "license": "Fair-code License",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/idurar/idurar-erp-crm/.git"
-  },
-  "bugs": {
-    "url": "https://github.com/idurar/idurar-erp-crm//issues"
-  },
-  "homepage": "https://github.com/idurar/idurar-erp-crm/#readme"
+  "main": "src/server.js",
+  "author": "MyCRM",
+  "email": "contact@mycrm.com",
+  "license": "MIT"
 }

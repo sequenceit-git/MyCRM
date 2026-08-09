@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_BASE_URL } from '@/config/serverApiConfig';
+import { notification } from 'antd';
 
 import errorHandler from './errorHandler';
 import successHandler from './successHandler';
@@ -13,6 +14,26 @@ function findKeyByPrefix(object, prefix) {
   }
 }
 
+function isGuest() {
+  return sessionStorage.getItem('isGuestMode') === 'true';
+}
+
+function handleGuestBlocked() {
+  notification.config({
+    duration: 4,
+    maxCount: 2,
+  });
+  notification.warning({
+    message: 'View-Only Demo Mode',
+    description: 'Creating, updating, or deleting records is disabled in the guest preview.',
+  });
+  return {
+    success: false,
+    result: null,
+    message: 'View-Only Demo Mode: Modifications are disabled.',
+  };
+}
+
 function includeToken() {
   axios.defaults.baseURL = API_BASE_URL;
 
@@ -22,10 +43,16 @@ function includeToken() {
   if (auth) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${auth.current.token}`;
   }
+  if (isGuest()) {
+    axios.defaults.headers.common['x-guest-mode'] = 'true';
+  } else {
+    delete axios.defaults.headers.common['x-guest-mode'];
+  }
 }
 
 const request = {
   create: async ({ entity, jsonData }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.post(entity + '/create', jsonData);
@@ -39,6 +66,7 @@ const request = {
     }
   },
   createAndUpload: async ({ entity, jsonData }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.post(entity + '/create', jsonData, {
@@ -69,6 +97,7 @@ const request = {
     }
   },
   update: async ({ entity, id, jsonData }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.patch(entity + '/update/' + id, jsonData);
@@ -82,6 +111,7 @@ const request = {
     }
   },
   updateAndUpload: async ({ entity, id, jsonData }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.patch(entity + '/update/' + id, jsonData, {
@@ -100,6 +130,7 @@ const request = {
   },
 
   delete: async ({ entity, id }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.delete(entity + '/delete/' + id);
@@ -213,6 +244,7 @@ const request = {
     }
   },
   patch: async ({ entity, jsonData }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.patch(entity, jsonData);
@@ -227,6 +259,7 @@ const request = {
   },
 
   upload: async ({ entity, id, jsonData }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.patch(entity + '/upload/' + id, jsonData, {
@@ -272,6 +305,7 @@ const request = {
   },
 
   mail: async ({ entity, jsonData }) => {
+    if (isGuest()) return handleGuestBlocked();
     try {
       includeToken();
       const response = await axios.post(entity + '/mail/', jsonData);

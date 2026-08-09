@@ -19,6 +19,7 @@ const Logout = () => {
   }, []);
 
   useEffect(() => {
+    sessionStorage.removeItem('isGuestMode');
     asyncLogout();
     navigate('/login');
   }, []);

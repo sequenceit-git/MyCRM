@@ -139,16 +139,10 @@ export default function UpdateItem({ config, UpdateForm }) {
         onBack={() => {
           navigate(`/${entity.toLowerCase()}`);
         }}
-        title={translate('update')}
-        ghost={false}
-        tags={[
-          <span key="status">{currentErp.status && translate(currentErp.status)}</span>,
-          currentErp.paymentStatus && (
-            <span key="paymentStatus">
-              {currentErp.paymentStatus && translate(currentErp.paymentStatus)}
-            </span>
-          ),
-        ]}
+        backIcon={<ArrowLeftOutlined />}
+        title={translate('Update')}
+        ghost={true}
+        tags={<Tag color="volcano">{currentErp.status}</Tag>}
         extra={[
           <Button
             key={`${uniqueId()}`}
@@ -162,10 +156,10 @@ export default function UpdateItem({ config, UpdateForm }) {
           <SaveForm translate={translate} form={form} key={`${uniqueId()}`} />,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '0 0 16px 0',
         }}
       ></PageHeader>
-      <Divider dashed />
+      <Divider style={{ margin: '0 0 24px 0' }} />
       <Loading isLoading={isLoading}>
         <Form form={form} layout="vertical" onFinish={onSubmit} onValuesChange={handelValuesChange}>
           <UpdateForm subTotal={subTotal} current={current} />

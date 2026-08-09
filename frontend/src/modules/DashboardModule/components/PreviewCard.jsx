@@ -1,89 +1,51 @@
-import { useMemo } from 'react';
-import { Col, Progress, Spin } from 'antd';
+import { Progress, Skeleton } from 'antd';
 import useLanguage from '@/locale/useLanguage';
 
-const colours = {
-  draft: '#595959',
-  sent: '#1890ff',
-  pending: '#1890ff',
-  unpaid: '#ffa940',
-  overdue: '#ff4d4f',
-  partially: '#13c2c2',
-  paid: '#95de64',
-  declined: '#ff4d4f',
-  accepted: '#95de64',
-  cyan: '#13c2c2',
-  purple: '#722ed1',
-  expired: '#614700',
+const statusColors = {
+  draft: '#374151',
+  sent: '#1677ff',
+  pending: '#3b82f6',
+  unpaid: '#ef4444',
+  overdue: '#dc2626',
+  paid: '#22c55e',
+  partially: '#f59e0b',
+  accepted: '#22c55e',
+  declined: '#ef4444',
+  expired: '#9ca3af',
+  collected: '#22c55e',
 };
 
-const defaultStatistics = [
-  {
-    tag: 'draft',
-    value: 0,
-  },
-  {
-    tag: 'pending',
-    value: 0,
-  },
-  {
-    tag: 'sent',
-    value: 0,
-  },
-  {
-    tag: 'accepted',
-    value: 0,
-  },
-  {
-    tag: 'declined',
-    value: 0,
-  },
-  {
-    tag: 'expired',
-    value: 0,
-  },
-];
-
-const defaultInvoiceStatistics = [
-  {
-    tag: 'draft',
-    value: 0,
-  },
-  {
-    tag: 'pending',
-    value: 0,
-  },
-  {
-    tag: 'overdue',
-    value: 0,
-  },
-  {
-    tag: 'paid',
-    value: 0,
-  },
-  {
-    tag: 'unpaid',
-    value: 0,
-  },
-  {
-    tag: 'partially',
-    value: 0,
-  },
-];
-
-const PreviewState = ({ tag, value }) => {
+const PreviewState = ({ tag, label, value = 0 }) => {
   const translate = useLanguage();
+  const rawColor = statusColors[tag?.toLowerCase()] || '#374151';
+  const strokeColor = value > 0 ? rawColor : '#e5e7eb';
+  const displayLabel = label || translate(tag) || tag;
+
   return (
-    <div style={{ color: '#595959', marginBottom: 5 }}>
-      <div className="left alignLeft capitalize">{translate(tag)}</div>
-      <div className="right alignRight">{value} %</div>
+    <div style={{ marginBottom: '12px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          fontSize: '13px',
+          fontWeight: '600',
+          color: '#1f2937',
+          marginBottom: '5px',
+        }}
+      >
+        <span style={{ textTransform: 'capitalize' }}>{displayLabel}</span>
+        <span style={{ color: '#4b5563', fontSize: '12px', fontWeight: '600' }}>
+          {value} %
+        </span>
+      </div>
       <Progress
         percent={value}
         showInfo={false}
-        strokeColor={{
-          '0%': '#333',
-          '100%': '#333',
-        }}
+        strokeColor={strokeColor}
+        trailColor="#f3f4f6"
+        size={['100%', 6]}
+        style={{ margin: 0 }}
       />
     </div>
   );
@@ -91,66 +53,56 @@ const PreviewState = ({ tag, value }) => {
 
 export default function PreviewCard({
   title = 'Preview',
-  statistics = defaultStatistics,
+  statistics = [],
   isLoading = false,
-  entity = 'invoice',
 }) {
-  const statisticsMap = useMemo(() => {
-    if (entity === 'invoice') {
-      return defaultInvoiceStatistics.map((defaultStat) => {
-        const matchedStat = Array.isArray(statistics)
-          ? statistics.find((stat) => stat.tag === defaultStat.tag)
-          : null;
-        return matchedStat || defaultStat;
-      });
-    } else {
-      return defaultStatistics.map((defaultStat) => {
-        const matchedStat = Array.isArray(statistics)
-          ? statistics.find((stat) => stat.tag === defaultStat.tag)
-          : null;
-        return matchedStat || defaultStat;
-      });
-    }
-  }, [statistics, entity]);
-
-  const customSort = (a, b) => {
-    const colorOrder = Object.values(colours);
-    const indexA = colorOrder.indexOf(a.props.color);
-    const indexB = colorOrder.indexOf(b.props.color);
-    return indexA - indexB;
-  };
   return (
-    <Col
-      className="gutter-row"
-      xs={{ span: 24 }}
-      sm={{ span: 24 }}
-      md={{ span: 12 }}
-      lg={{ span: 12 }}
-    >
-      <div className="pad20">
-        <h3
-          style={{
-            color: '#22075e',
-            fontSize: 'large',
-            marginBottom: 40,
-            marginTop: 0,
-          }}
-        >
-          {title}
-        </h3>
-        {isLoading ? (
-          <div style={{ textAlign: 'center' }}>
-            <Spin />
-          </div>
-        ) : (
-          statisticsMap
-            ?.map((status, index) => (
-              <PreviewState key={index} tag={status.tag} value={status?.value} />
-              // sort by colours
-            ))
-            .sort(customSort)
-        )}
-      </div>
-    </Col>
+    <div style={{ padding: '0 12px', height: '100%' }}>
+      <h4
+        style={{
+          color: '#22075e',
+          fontSize: '15px',
+          fontWeight: '700',
+          margin: '0 0 20px',
+          letterSpacing: '-0.2px',
+        }}
+      >
+        {title}
+      </h4>
+      {isLoading ? (
+        <div style={{ padding: '4px 0' }}>
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} style={{ marginBottom: '14px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: '6px',
+                }}
+              >
+                <Skeleton.Input active size="small" style={{ width: 65, height: 13 }} />
+                <Skeleton.Input active size="small" style={{ width: 30, height: 13 }} />
+              </div>
+              <Skeleton.Button
+                active
+                size="small"
+                style={{ width: '100%', height: 6, borderRadius: 4 }}
+              />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          {statistics.map((status, index) => (
+            <PreviewState
+              key={index}
+              tag={status.tag}
+              label={status.label}
+              value={status?.value || 0}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

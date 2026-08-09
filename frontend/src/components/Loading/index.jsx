@@ -1,12 +1,12 @@
-import { Spin } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Skeleton } from 'antd';
 
 export default function Loading({ isLoading, children }) {
-  const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
-
-  return (
-    <Spin indicator={antIcon} spinning={isLoading}>
-      {children}
-    </Spin>
-  );
+  if (isLoading) {
+    return (
+      <div style={{ padding: '24px', width: '100%' }}>
+        <Skeleton active paragraph={{ rows: 6 }} />
+      </div>
+    );
+  }
+  return children;
 }

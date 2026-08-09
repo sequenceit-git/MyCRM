@@ -18,11 +18,22 @@ const createCRUDController = (modelName) => {
   }
 
   const Model = mongoose.model(modelName);
+  const isGuest = (req) =>
+    req.headers['x-guest-mode'] === 'true' ||
+    req.admin?.role === 'guest' ||
+    req.admin?.email?.startsWith('guest');
+  const guestBlock = (res) =>
+    res.status(403).json({
+      success: false,
+      result: null,
+      message: 'View-Only Demo Mode: Modifications are disabled in guest preview.',
+    });
+
   let crudMethods = {
-    create: (req, res) => create(Model, req, res),
+    create: (req, res) => (isGuest(req) ? guestBlock(res) : create(Model, req, res)),
     read: (req, res) => read(Model, req, res),
-    update: (req, res) => update(Model, req, res),
-    delete: (req, res) => remove(Model, req, res),
+    update: (req, res) => (isGuest(req) ? guestBlock(res) : update(Model, req, res)),
+    delete: (req, res) => (isGuest(req) ? guestBlock(res) : remove(Model, req, res)),
     list: (req, res) => paginatedList(Model, req, res),
     listAll: (req, res) => listAll(Model, req, res),
     search: (req, res) => search(Model, req, res),

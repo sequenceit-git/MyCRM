@@ -111,9 +111,8 @@ export default function CreateItem({ config, CreateForm }) {
         }}
         backIcon={<ArrowLeftOutlined />}
         title={translate('New')}
-        ghost={false}
-        tags={<Tag>{translate('Draft')}</Tag>}
-        // subTitle="This is create page"
+        ghost={true}
+        tags={<Tag color="blue">{translate('Draft')}</Tag>}
         extra={[
           <Button
             key={`${uniqueId()}`}
@@ -125,10 +124,10 @@ export default function CreateItem({ config, CreateForm }) {
           <SaveForm form={form} key={`${uniqueId()}`} />,
         ]}
         style={{
-          padding: '20px 0px',
+          padding: '0 0 16px 0',
         }}
       ></PageHeader>
-      <Divider dashed />
+      <Divider style={{ margin: '0 0 24px 0' }} />
       <Loading isLoading={isLoading}>
         <Form form={form} layout="vertical" onFinish={onSubmit} onValuesChange={handelValuesChange}>
           <CreateForm subTotal={subTotal} offerTotal={offerSubTotal} />

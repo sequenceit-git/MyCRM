@@ -1,96 +1,167 @@
-import { Tag, Divider, Row, Col, Spin, Tooltip } from 'antd';
+import { useState } from 'react';
+import { Col, Skeleton, Dropdown } from 'antd';
+import { CalendarOutlined } from '@ant-design/icons';
 import { useMoney } from '@/settings';
 import { selectMoneyFormat } from '@/redux/settings/selectors';
 import { useSelector } from 'react-redux';
 
-export default function AnalyticSummaryCard({ title, tagColor, data, prefix, isLoading = false }) {
+export default function SummaryCard({
+  title,
+  themeColor = 'green',
+  data = 0,
+  isLoading = false,
+  onFilterChange,
+  span = { xs: 24, sm: 12, md: 8, lg: 8 },
+}) {
   const { moneyFormatter } = useMoney();
   const money_format_settings = useSelector(selectMoneyFormat);
+  const [selectedLabel, setSelectedLabel] = useState('From Begining');
+
+  const filterItems = [
+    { key: 'yesterday', label: 'Yesterday' },
+    { key: 'last_week', label: 'Last Week' },
+    { key: 'last_month', label: 'Last Month' },
+    { key: 'last_year', label: 'Last Year' },
+    { key: 'all', label: 'From Begining' },
+  ];
+
+  const handleMenuClick = ({ key }) => {
+    const item = filterItems.find((f) => f.key === key);
+    if (item) {
+      setSelectedLabel(item.label);
+      if (onFilterChange) {
+        onFilterChange(key);
+      }
+    }
+  };
+
+  const themeStyles = {
+    green: {
+      bg: '#f6ffed',
+      color: '#389e0d',
+      border: '1px solid #d9f7be',
+    },
+    red: {
+      bg: '#fff1f0',
+      color: '#cf1322',
+      border: '1px solid #ffccc7',
+    },
+    blue: {
+      bg: '#e6f4ff',
+      color: '#0958d9',
+      border: '1px solid #bae0ff',
+    },
+    purple: {
+      bg: '#f9f0ff',
+      color: '#531dab',
+      border: '1px solid #efdbff',
+    },
+  };
+
+  const style = themeStyles[themeColor] || themeStyles.green;
+
   return (
     <Col
       className="gutter-row"
-      xs={{ span: 24 }}
-      sm={{ span: 12 }}
-      md={{ span: 12 }}
-      lg={{ span: 6 }}
+      xs={span.xs || 24}
+      sm={span.sm || 12}
+      md={span.md || 8}
+      lg={span.lg || 8}
     >
       <div
-        className="whiteBox shadow"
-        style={{ color: '#595959', fontSize: 13, minHeight: '106px', height: '100%' }}
+        style={{
+          background: '#ffffff',
+          borderRadius: '12px',
+          border: '1px solid #edf2f7',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.03)',
+          padding: '20px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          height: '100%',
+          minHeight: '170px',
+          transition: 'all 0.3s ease',
+        }}
       >
-        <div className="pad15 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
-          <h3
-            style={{
-              color: '#22075e',
-              fontSize: 'large',
-              margin: '5px 0',
-              textTransform: 'capitalize',
-            }}
-          >
-            {title}
-          </h3>
+        <h4
+          style={{
+            color: '#22075e',
+            fontSize: '15px',
+            fontWeight: '700',
+            margin: '0 0 16px',
+            letterSpacing: '-0.2px',
+            textAlign: 'center',
+          }}
+        >
+          {title}
+        </h4>
+
+        <div
+          style={{
+            width: '100%',
+            background: style.bg,
+            color: style.color,
+            border: style.border,
+            borderRadius: '8px',
+            padding: '10px 16px',
+            textAlign: 'center',
+            fontSize: '20px',
+            fontWeight: '700',
+            letterSpacing: '-0.5px',
+            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.02)',
+          }}
+        >
+          {isLoading ? (
+            <Skeleton.Button active size="small" style={{ width: '120px', height: '24px', borderRadius: '6px' }} />
+          ) : (
+            moneyFormatter({
+              amount: data || 0,
+              currency_code: money_format_settings?.default_currency_code,
+            })
+          )}
         </div>
-        <Divider style={{ padding: 0, margin: 0 }}></Divider>
-        <div className="pad15">
-          <Row gutter={[0, 0]} justify="space-between" wrap={false}>
-            <Col className="gutter-row" flex="85px" style={{ textAlign: 'left' }}>
-              <div className="left" style={{ whiteSpace: 'nowrap' }}>
-                {prefix}
-              </div>
-            </Col>
-            <Divider
+
+        <div style={{ marginTop: '16px' }}>
+          <Dropdown
+            menu={{
+              items: filterItems,
+              onClick: handleMenuClick,
+            }}
+            trigger={['click']}
+            placement="bottomCenter"
+          >
+            <span
               style={{
-                height: '100%',
-                padding: '10px 0',
-                justifyContent: 'center',
+                display: 'inline-flex',
                 alignItems: 'center',
-              }}
-              type="vertical"
-            ></Divider>
-            <Col
-              className="gutter-row"
-              flex="auto"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
+                gap: '8px',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: '#4b5563',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                padding: '4px 10px',
+                background: '#ffffff',
+                cursor: 'pointer',
+                userSelect: 'none',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                transition: 'all 0.2s ease',
               }}
             >
-              {isLoading ? (
-                <Spin />
-              ) : (
-                <Tooltip
-                  title={data}
-                  style={{
-                    direction: 'ltr',
-                  }}
-                >
-                  <Tag
-                    color={tagColor}
-                    style={{
-                      margin: '0 auto',
-                      justifyContent: 'center',
-                      maxWidth: '110px',
-                      overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
-                      direction: 'ltr',
-                    }}
-                  >
-                    {data
-                      ? moneyFormatter({
-                          amount: data,
-                          currency_code: money_format_settings?.default_currency_code,
-                        })
-                      : moneyFormatter({
-                          amount: 0,
-                          currency_code: money_format_settings?.default_currency_code,
-                        })}
-                  </Tag>
-                </Tooltip>
-              )}
-            </Col>
-          </Row>
+              <span>{selectedLabel}</span>
+              <span
+                style={{
+                  borderLeft: '1px solid #e5e7eb',
+                  paddingLeft: '6px',
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                <CalendarOutlined style={{ color: '#6366f1', fontSize: '13px' }} />
+              </span>
+            </span>
+          </Dropdown>
         </div>
       </div>
     </Col>

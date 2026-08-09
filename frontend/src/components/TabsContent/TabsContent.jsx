@@ -3,7 +3,16 @@ import { Tabs, Row, Col } from 'antd';
 const SettingsLayout = ({ children }) => {
   return (
     <Col className="gutter-row" order={0}>
-      <div className="whiteBox shadow" style={{ minHeight: '480px' }}>
+      <div
+        className="whiteBox shadow"
+        style={{
+          minHeight: '480px',
+          background: '#ffffff',
+          borderRadius: '12px',
+          border: '1px solid #edf2f7',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.03)',
+        }}
+      >
         <div className="pad40">{children}</div>
       </div>
     </Col>
@@ -19,12 +28,19 @@ const TopCard = ({ pageTitle }) => {
         fontSize: 13,
         height: '70px',
         minHeight: 'auto',
-        marginBottom: '24px',
+        marginBottom: '20px',
+        background: '#ffffff',
+        borderRadius: '12px',
+        border: '1px solid #edf2f7',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.03)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <div className="pad20 strong" style={{ textAlign: 'center', justifyContent: 'center' }}>
-        <h2 style={{ color: '#22075e', marginBottom: 0, marginTop: 0 }}>{pageTitle}</h2>
-      </div>
+      <h3 style={{ color: '#22075e', margin: 0, fontWeight: '700', fontSize: '18px' }}>
+        {pageTitle}
+      </h3>
     </div>
   );
 };
@@ -40,7 +56,15 @@ const RightMenu = ({ children, pageTitle }) => {
       order={1}
     >
       <TopCard pageTitle={pageTitle} />
-      <div className="whiteBox shadow">
+      <div
+        className="whiteBox shadow"
+        style={{
+          background: '#ffffff',
+          borderRadius: '12px',
+          border: '1px solid #edf2f7',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.03)',
+        }}
+      >
         <div className="pad25" style={{ width: '100%', paddingBottom: 0 }}>
           {children}
         </div>

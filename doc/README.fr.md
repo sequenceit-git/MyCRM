@@ -30,7 +30,6 @@ nom d'utilisateur : admin@admin.com  mot de passe : admin123
 ```
 
 ## License
-
 IDURAR est un Open Code Source gratuit [fair-code](http://faircode.io) distribué sous la
 [**IDURAR License 1.0**](https://github.com/idurar/idurar-erp-crm/blob/master/LICENSE)
 

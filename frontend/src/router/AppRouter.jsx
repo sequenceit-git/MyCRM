@@ -1,15 +1,12 @@
-import { lazy, useEffect } from 'react';
-
-import {} from 'react-router-dom';
-import {} from 'react-router-dom';
-import { Navigate, useLocation, useRoutes } from 'react-router-dom';
+import { Suspense, useEffect } from 'react';
+import { useLocation, useRoutes } from 'react-router-dom';
 import { useAppContext } from '@/context/appContext';
-
+import TableSkeleton from '@/components/TableSkeleton';
 import routes from './routes';
 
 export default function AppRouter() {
   let location = useLocation();
-  const { state: stateApp, appContextAction } = useAppContext();
+  const { appContextAction } = useAppContext();
   const { app } = appContextAction;
 
   const routesList = [];
@@ -26,9 +23,9 @@ export default function AppRouter() {
         }
       }
     }
-    // Return 'default' app  if the path is not found
     return 'default';
   }
+
   useEffect(() => {
     if (location.pathname === '/') {
       app.default();
@@ -40,5 +37,22 @@ export default function AppRouter() {
 
   let element = useRoutes(routesList);
 
-  return element;
+  return (
+    <Suspense
+      fallback={
+        <div
+          style={{
+            background: '#ffffff',
+            borderRadius: '12px',
+            border: '1px solid #edf2f7',
+            padding: '24px 28px',
+          }}
+        >
+          <TableSkeleton rows={8} />
+        </div>
+      }
+    >
+      {element}
+    </Suspense>
+  );
 }

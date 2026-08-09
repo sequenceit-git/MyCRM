@@ -10,23 +10,36 @@ const summary = async (req, res) => {
 
   const { type } = req.query;
 
-  const settings = await loadSettings();
-
-  if (type) {
-    if (['week', 'month', 'year'].includes(type)) {
-      defaultType = type;
-    } else {
-      return res.status(400).json({
-        success: false,
-        result: null,
-        message: 'Invalid type',
-      });
-    }
+  let dateFilter = {};
+  if (type === 'yesterday') {
+    dateFilter = {
+      date: {
+        $gte: moment().subtract(1, 'days').startOf('day').toDate(),
+        $lte: moment().subtract(1, 'days').endOf('day').toDate(),
+      },
+    };
+  } else if (type === 'week' || type === 'last_week') {
+    dateFilter = {
+      date: {
+        $gte: moment().subtract(7, 'days').startOf('day').toDate(),
+        $lte: moment().endOf('day').toDate(),
+      },
+    };
+  } else if (type === 'month' || type === 'last_month') {
+    dateFilter = {
+      date: {
+        $gte: moment().subtract(30, 'days').startOf('day').toDate(),
+        $lte: moment().endOf('day').toDate(),
+      },
+    };
+  } else if (type === 'year' || type === 'last_year') {
+    dateFilter = {
+      date: {
+        $gte: moment().subtract(365, 'days').startOf('day').toDate(),
+        $lte: moment().endOf('day').toDate(),
+      },
+    };
   }
-
-  const currentDate = moment();
-  let startDate = currentDate.clone().startOf(defaultType);
-  let endDate = currentDate.clone().endOf(defaultType);
 
   const statuses = ['draft', 'pending', 'overdue', 'paid', 'unpaid', 'partially'];
 
@@ -34,10 +47,7 @@ const summary = async (req, res) => {
     {
       $match: {
         removed: false,
-        // date: {
-        //   $gte: startDate.toDate(),
-        //   $lte: endDate.toDate(),
-        // },
+        ...dateFilter,
       },
     },
     {

@@ -22,17 +22,17 @@ export default function SideContent() {
       <div style={{ width: '100%' }}>
         <img
           src={logo}
-          alt="IDURAR ERP CRM"
-          style={{ margin: '0 0 40px', display: 'block' }}
-          height={63}
+          alt="MyCRM"
+          style={{ margin: '0 0 30px', display: 'block' }}
+          height={54}
           width={220}
         />
 
         <Title level={1} style={{ fontSize: 28 }}>
-          Free Open Source ERP / CRM
+          MyCRM System
         </Title>
         <Text>
-          Accounting / Invoicing / Quote App <b /> based on Node.js React.js Ant Design
+          Accounting / Invoicing / CRM Platform
         </Text>
 
         <div className="space20"></div>

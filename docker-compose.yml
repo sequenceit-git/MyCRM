@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mycrm-db
+    restart: always
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - mycrm-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mycrm-backend
+    restart: always
+    environment:
+      - PORT=8888
+      - DATABASE=mongodb://mongodb:27017/idurar
+      - SECRET=mycrm_super_secret_jwt_key_2026
+      - JWT_SECRET=mycrm_jwt_secret_token_2026
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+    networks:
+      - mycrm-net
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mycrm-api.rule=Host(`mycrm.sequenceit.software`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.mycrm-api.entrypoints=websecure"
+      - "traefik.http.routers.mycrm-api.tls=true"
+      - "traefik.http.routers.mycrm-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mycrm-api.loadbalancer.server.port=8888"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mycrm-frontend
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - mycrm-net
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mycrm-web.rule=Host(`mycrm.sequenceit.software`)"
+      - "traefik.http.routers.mycrm-web.entrypoints=websecure"
+      - "traefik.http.routers.mycrm-web.tls=true"
+      - "traefik.http.routers.mycrm-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mycrm-web.loadbalancer.server.port=80"
+
+volumes:
+  mongodb_data:
+
+networks:
+  mycrm-net:
+    driver: bridge
+  proxy:
+    external: true
