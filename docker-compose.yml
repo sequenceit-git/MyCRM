@@ -10,11 +10,11 @@ services:
     networks:
       - mycrm-net
 
-  backend:
+  app:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
-    container_name: mycrm-backend
+    container_name: mycrm-app
     restart: always
     environment:
       - PORT=8888
@@ -29,30 +29,11 @@ services:
       - proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mycrm-api.rule=Host(`mycrm.sequenceit.software`) && PathPrefix(`/api`)"
-      - "traefik.http.routers.mycrm-api.entrypoints=websecure"
-      - "traefik.http.routers.mycrm-api.tls=true"
-      - "traefik.http.routers.mycrm-api.tls.certresolver=letsencrypt"
-      - "traefik.http.services.mycrm-api.loadbalancer.server.port=8888"
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: mycrm-frontend
-    restart: always
-    depends_on:
-      - backend
-    networks:
-      - mycrm-net
-      - proxy
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.mycrm-web.rule=Host(`mycrm.sequenceit.software`)"
-      - "traefik.http.routers.mycrm-web.entrypoints=websecure"
-      - "traefik.http.routers.mycrm-web.tls=true"
-      - "traefik.http.routers.mycrm-web.tls.certresolver=letsencrypt"
-      - "traefik.http.services.mycrm-web.loadbalancer.server.port=80"
+      - "traefik.http.routers.mycrm.rule=Host(`mycrm.sequenceit.software`)"
+      - "traefik.http.routers.mycrm.entrypoints=websecure"
+      - "traefik.http.routers.mycrm.tls=true"
+      - "traefik.http.routers.mycrm.tls.certresolver=letsencrypt"
+      - "traefik.http.services.mycrm.loadbalancer.server.port=8888"
 
 volumes:
   mongodb_data:
