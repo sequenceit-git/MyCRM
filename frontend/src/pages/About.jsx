@@ -18,7 +18,7 @@ const About = () => {
       <Result
         status="info"
         title={'MyCRM'}
-        subTitle={translate('Cloud ERP & CRM Management Platform')}
+        subTitle={translate('Modern Cloud CRM & Sales Platform')}
         extra={
           <div style={{ color: '#4b5563', fontSize: '14px', lineHeight: '1.8' }}>
             <p style={{ margin: 0, fontWeight: '600' }}>Version : 1.0.0</p>

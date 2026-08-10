@@ -1,6 +1,6 @@
 <div align="center">
   <h1>💼 MyCRM</h1>
-  <p><b>Cloud ERP & CRM Business Management Platform</b></p>
+  <p><b>Modern Cloud CRM & Sales Management Platform</b></p>
   <p>
     <a href="https://mycrm.sequenceit.software">Live Application</a> •
     <a href="#-quick-start">Quick Start</a> •
@@ -12,7 +12,7 @@
 
 ## 🌟 Overview
 
-**MyCRM** is an all-in-one Cloud ERP & CRM management platform built on the modern MERN stack (**Node.js, Express, MongoDB, React, Redux, Ant Design**). It features a clean, elevated UI design with soft rounded cards (`#f0f5fa` canvas), interactive dashboard filters, section-wise skeleton loading, role-based permissions (Super Admin vs Guest View-Only), and single-command Docker deployment with **Traefik**.
+**MyCRM** is a modern Cloud CRM platform built on the modern MERN stack (**Node.js, Express, MongoDB, React, Redux, Ant Design**). It features a clean, elevated UI design with soft rounded cards (`#f0f5fa` canvas), interactive dashboard filters, section-wise skeleton loading, role-based permissions (Super Admin vs Guest View-Only), and single-command Docker deployment with **Traefik**.
 
 Hosted Domain: **[https://mycrm.sequenceit.software](https://mycrm.sequenceit.software)**  
 Git Repository: **[https://github.com/sequenceit-git/MyCRM.git](https://github.com/sequenceit-git/MyCRM.git)**
