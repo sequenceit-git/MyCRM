@@ -14,6 +14,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: ghcr.io/sequenceit-git/mycrm:latest
     container_name: mycrm-app
     restart: always
     environment:
