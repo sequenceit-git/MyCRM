@@ -44,7 +44,7 @@ const errorHandler = (error) => {
     const { isLogout } = (jsonFile && JSON.parse(jsonFile)) || false;
     window.localStorage.removeItem('auth');
     window.localStorage.removeItem('isLogout');
-    if (result || isLogout) {
+    if ((result || isLogout) && window.location.pathname !== '/logout') {
       window.location.href = '/logout';
     }
   }
@@ -66,7 +66,9 @@ const errorHandler = (error) => {
     if (response?.data?.error?.name === 'JsonWebTokenError') {
       window.localStorage.removeItem('auth');
       window.localStorage.removeItem('isLogout');
-      window.location.href = '/logout';
+      if (window.location.pathname !== '/logout') {
+        window.location.href = '/logout';
+      }
     } else return response.data;
   } else {
     notification.config({

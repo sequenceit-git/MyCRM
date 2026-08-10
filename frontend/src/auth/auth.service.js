@@ -93,11 +93,15 @@ export const logout = async () => {
       { data, status },
       {
         notifyOnSuccess: false,
-        notifyOnFailed: true,
+        notifyOnFailed: false,
       }
     );
     return data;
   } catch (error) {
-    return errorHandler(error);
+    return {
+      success: false,
+      result: null,
+      message: error.message || 'Logout request failed',
+    };
   }
 };

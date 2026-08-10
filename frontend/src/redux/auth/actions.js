@@ -1,6 +1,7 @@
 import * as actionTypes from './types';
 import * as authService from '@/auth';
 import { request } from '@/request';
+import axios from 'axios';
 
 export const login =
   ({ loginData }) =>
@@ -109,34 +110,18 @@ export const logout = () => async (dispatch) => {
   dispatch({
     type: actionTypes.LOGOUT_SUCCESS,
   });
-  const result = window.localStorage.getItem('auth');
-  const tmpAuth = result ? JSON.parse(result) : null;
-  const settings = window.localStorage.getItem('settings');
-  const tmpSettings = settings ? JSON.parse(settings) : null;
   // Call the server logout first so the axios auth token header is still set
-  const data = await authService.logout();
-  // Only clear localStorage after the server call completes
+  try {
+    await authService.logout();
+  } catch (error) {
+    // Ignore server-side logout errors
+  }
+  // Clear localStorage and axios headers
   window.localStorage.removeItem('auth');
   window.localStorage.removeItem('settings');
   window.localStorage.setItem('isLogout', JSON.stringify({ isLogout: true }));
-  if (data.success === false) {
-    const auth_state = {
-      current: tmpAuth,
-      isLoggedIn: true,
-      isLoading: false,
-      isSuccess: true,
-    };
-    window.localStorage.setItem('auth', JSON.stringify(auth_state));
-    if (tmpSettings) {
-      window.localStorage.setItem('settings', JSON.stringify(tmpSettings));
-    }
-    window.localStorage.removeItem('isLogout');
-    dispatch({
-      type: actionTypes.LOGOUT_FAILED,
-      payload: data.result,
-    });
-  } else {
-    // on logout success
+  if (axios.defaults.headers.common['Authorization']) {
+    delete axios.defaults.headers.common['Authorization'];
   }
 };
 
