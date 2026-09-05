@@ -5,6 +5,17 @@ import NotFound from '@/pages/NotFound.jsx';
 
 import Dashboard from '@/pages/Dashboard';
 import Customer from '@/pages/Customer';
+import People from '@/pages/People';
+import Company from '@/pages/Company';
+import Lead from '@/pages/Lead';
+import Offer from '@/pages/Offer';
+import Product from '@/pages/Product';
+import ProductCategory from '@/pages/ProductCategory';
+import Order from '@/pages/Order';
+import Expense from '@/pages/Expense';
+import ExpenseCategory from '@/pages/ExpenseCategory';
+import Report from '@/pages/Report';
+
 import Invoice from '@/pages/Invoice';
 import InvoiceCreate from '@/pages/Invoice/InvoiceCreate';
 import InvoiceRead from '@/pages/Invoice/InvoiceRead';
@@ -23,6 +34,12 @@ import PaymentMode from '@/pages/PaymentMode';
 
 import Taxes from '@/pages/Taxes';
 import Settings from '@/pages/Settings/Settings';
+import Admin from '@/pages/Admin';
+import Currency from '@/pages/Currency';
+import ApiKeySettings from '@/pages/Settings/ApiKeySettings';
+import EmailTemplateSettings from '@/pages/Settings/EmailTemplateSettings';
+import MultiCompanySettings from '@/pages/Settings/MultiCompanySettings';
+import PublicFormSettings from '@/pages/Settings/PublicFormSettings';
 import Profile from '@/pages/Profile';
 import About from '@/pages/About';
 
@@ -53,7 +70,46 @@ let routes = {
       path: '/customer',
       element: <Customer />,
     },
-
+    {
+      path: '/people',
+      element: <People />,
+    },
+    {
+      path: '/company',
+      element: <Company />,
+    },
+    {
+      path: '/lead',
+      element: <Lead />,
+    },
+    {
+      path: '/offer',
+      element: <Offer />,
+    },
+    {
+      path: '/product',
+      element: <Product />,
+    },
+    {
+      path: '/product/category',
+      element: <ProductCategory />,
+    },
+    {
+      path: '/order',
+      element: <Order />,
+    },
+    {
+      path: '/expense',
+      element: <Expense />,
+    },
+    {
+      path: '/expense/category',
+      element: <ExpenseCategory />,
+    },
+    {
+      path: '/report',
+      element: <Report />,
+    },
     {
       path: '/invoice',
       element: <Invoice />,
@@ -102,7 +158,14 @@ let routes = {
       path: '/payment/update/:id',
       element: <PaymentUpdate />,
     },
-
+    {
+      path: '/admin',
+      element: <Admin />,
+    },
+    {
+      path: '/currency',
+      element: <Currency />,
+    },
     {
       path: '/settings',
       element: <Settings />,
@@ -112,6 +175,22 @@ let routes = {
       element: <Settings />,
     },
     {
+      path: '/settings/api-key',
+      element: <ApiKeySettings />,
+    },
+    {
+      path: '/settings/email-template',
+      element: <EmailTemplateSettings />,
+    },
+    {
+      path: '/settings/multi-company',
+      element: <MultiCompanySettings />,
+    },
+    {
+      path: '/settings/public-form',
+      element: <PublicFormSettings />,
+    },
+    {
       path: '/payment/mode',
       element: <PaymentMode />,
     },
@@ -119,7 +198,6 @@ let routes = {
       path: '/taxes',
       element: <Taxes />,
     },
-
     {
       path: '/profile',
       element: <Profile />,

@@ -11,8 +11,14 @@ const { singleStorageUpload } = require('@/middlewares/uploadMiddleware');
 
 // //_______________________________ Admin management_______________________________
 
+router.route('/admin/create').post(catchErrors(adminController.create));
 router.route('/admin/read/:id').get(catchErrors(adminController.read));
-
+router.route('/admin/update/:id').patch(catchErrors(adminController.update));
+router.route('/admin/delete/:id').delete(catchErrors(adminController.delete));
+router.route('/admin/search').get(catchErrors(adminController.search));
+router.route('/admin/list').get(catchErrors(adminController.list));
+router.route('/admin/listAll').get(catchErrors(adminController.listAll));
+router.route('/admin/filter').get(catchErrors(adminController.filter));
 router.route('/admin/password-update/:id').patch(catchErrors(adminController.updatePassword));
 
 //_______________________________ Admin Profile _______________________________
@@ -30,7 +36,6 @@ router
 router.route('/setting/create').post(catchErrors(settingController.create));
 router.route('/setting/read/:id').get(catchErrors(settingController.read));
 router.route('/setting/update/:id').patch(catchErrors(settingController.update));
-//router.route('/setting/delete/:id).delete(catchErrors(settingController.delete));
 router.route('/setting/search').get(catchErrors(settingController.search));
 router.route('/setting/list').get(catchErrors(settingController.list));
 router.route('/setting/listAll').get(catchErrors(settingController.listAll));
@@ -49,4 +54,5 @@ router
     catchErrors(settingController.updateBySettingKey)
   );
 router.route('/setting/updateManySetting').patch(catchErrors(settingController.updateManySetting));
+
 module.exports = router;

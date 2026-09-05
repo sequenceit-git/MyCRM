@@ -13,6 +13,17 @@ const contextActions = (dispatch) => {
         dispatch({ type: actionTypes.COLLAPSE_NAV_MENU });
       },
     },
+    aiSidebar: {
+      open: () => {
+        dispatch({ type: actionTypes.OPEN_AI_SIDEBAR });
+      },
+      close: () => {
+        dispatch({ type: actionTypes.CLOSE_AI_SIDEBAR });
+      },
+      toggle: () => {
+        dispatch({ type: actionTypes.COLLAPSE_AI_SIDEBAR });
+      },
+    },
     app: {
       open: (appName) => {
         dispatch({ type: actionTypes.CHANGE_APP, playload: appName });
@@ -25,3 +36,4 @@ const contextActions = (dispatch) => {
 };
 
 export default contextActions;
+

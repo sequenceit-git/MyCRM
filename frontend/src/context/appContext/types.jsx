@@ -3,3 +3,7 @@ export const CLOSE_NAV_MENU = 'CLOSE_NAV_MENU';
 export const COLLAPSE_NAV_MENU = 'COLLAPSE_NAV_MENU';
 export const CHANGE_APP = 'CHANGE_APP';
 export const DEFAULT_APP = 'DEFAULT_APP';
+export const OPEN_AI_SIDEBAR = 'OPEN_AI_SIDEBAR';
+export const CLOSE_AI_SIDEBAR = 'CLOSE_AI_SIDEBAR';
+export const COLLAPSE_AI_SIDEBAR = 'COLLAPSE_AI_SIDEBAR';
+

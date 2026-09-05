@@ -89,8 +89,9 @@ const summary = async (Model, req, res) => {
     result: {
       new: Math.round(totalNewClientsPercentage),
       active: Math.round(totalActiveClientsPercentage),
+      total: totalClients,
     },
-    message: 'Successfully get summary of new clients',
+    message: 'Successfully get summary of clients',
   });
 };
 

@@ -6,7 +6,6 @@ import { useAppContext } from '@/context/appContext';
 
 import useLanguage from '@/locale/useLanguage';
 import logoIcon from '@/style/images/logo-icon.svg';
-import logoText from '@/style/images/logo-text.svg';
 
 import useResponsive from '@/hooks/useResponsive';
 
@@ -25,7 +24,9 @@ import {
   ShopOutlined,
   FilterOutlined,
   WalletOutlined,
-  ReconciliationOutlined,
+  ShoppingCartOutlined,
+  PieChartOutlined,
+  ScheduleOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -55,56 +56,134 @@ function Sidebar({ collapsible, isMobile = false }) {
       label: <Link to={'/'}>{translate('dashboard')}</Link>,
     },
     {
-      key: 'customer',
-      icon: <CustomerServiceOutlined />,
-      label: <Link to={'/customer'}>{translate('customers')}</Link>,
-    },
-
-    {
       key: 'invoice',
       icon: <ContainerOutlined />,
       label: <Link to={'/invoice'}>{translate('invoices')}</Link>,
-    },
-    {
-      key: 'quote',
-      icon: <FileSyncOutlined />,
-      label: <Link to={'/quote'}>{translate('quote')}</Link>,
     },
     {
       key: 'payment',
       icon: <CreditCardOutlined />,
       label: <Link to={'/payment'}>{translate('payments')}</Link>,
     },
-
     {
-      key: 'paymentMode',
-      label: <Link to={'/payment/mode'}>{translate('payments_mode')}</Link>,
-      icon: <WalletOutlined />,
+      key: 'quote',
+      icon: <FileSyncOutlined />,
+      label: <Link to={'/quote'}>{translate('quotes')}</Link>,
     },
     {
-      key: 'taxes',
-      label: <Link to={'/taxes'}>{translate('taxes')}</Link>,
+      key: 'customer',
+      icon: <CustomerServiceOutlined />,
+      label: <Link to={'/customer'}>{translate('customers')}</Link>,
+    },
+    {
+      key: 'people',
+      icon: <UserOutlined />,
+      label: <Link to={'/people'}>{translate('peoples')}</Link>,
+    },
+    {
+      key: 'company',
       icon: <ShopOutlined />,
+      label: <Link to={'/company'}>{translate('companies')}</Link>,
     },
     {
-      key: 'generalSettings',
-      label: <Link to={'/settings'}>{translate('settings')}</Link>,
+      key: 'lead',
+      icon: <FilterOutlined />,
+      label: <Link to={'/lead'}>{translate('leads')}</Link>,
+    },
+    {
+      key: 'offer',
+      icon: <FileOutlined />,
+      label: <Link to={'/offer'}>{translate('offer_leads') || 'Offers for Leads'}</Link>,
+    },
+    {
+      key: 'product',
+      icon: <TagOutlined />,
+      label: <Link to={'/product'}>{translate('products')}</Link>,
+    },
+    {
+      key: 'productCategory',
+      icon: <TagsOutlined />,
+      label: <Link to={'/product/category'}>{translate('products_category')}</Link>,
+    },
+    {
+      key: 'order',
+      icon: <ShoppingCartOutlined />,
+      label: <Link to={'/order'}>{translate('order') || 'Order'}</Link>,
+    },
+    {
+      key: 'expense',
+      icon: <WalletOutlined />,
+      label: <Link to={'/expense'}>{translate('expenses')}</Link>,
+    },
+    {
+      key: 'expenseCategory',
+      icon: <ScheduleOutlined />,
+      label: <Link to={'/expense/category'}>{translate('expenses_category')}</Link>,
+    },
+    {
+      key: 'report',
+      icon: <PieChartOutlined />,
+      label: <Link to={'/report'}>Report</Link>,
+    },
+    {
+      key: 'settingsGroup',
       icon: <SettingOutlined />,
-    },
-    {
-      key: 'about',
-      label: <Link to={'/about'}>{translate('about')}</Link>,
-      icon: <ReconciliationOutlined />,
+      label: translate('settings'),
+      children: [
+        {
+          key: 'settings',
+          label: <Link to={'/settings'}>Settings</Link>,
+        },
+        {
+          key: 'admin',
+          label: <Link to={'/admin'}>Admin</Link>,
+        },
+        {
+          key: 'apiKey',
+          label: <Link to={'/settings/api-key'}>Developer Api Key</Link>,
+        },
+        {
+          key: 'about',
+          label: <Link to={'/about'}>About</Link>,
+        },
+        {
+          key: 'emailTemplates',
+          label: <Link to={'/settings/email-template'}>Email Templates</Link>,
+        },
+        {
+          key: 'multiCompany',
+          label: <Link to={'/settings/multi-company'}>Multi-company</Link>,
+        },
+        {
+          key: 'currencies',
+          label: <Link to={'/currency'}>Currencies</Link>,
+        },
+        {
+          key: 'publicForm',
+          label: <Link to={'/settings/public-form'}>Public Form</Link>,
+        },
+        {
+          key: 'taxes',
+          label: <Link to={'/taxes'}>Tax</Link>,
+        },
+        {
+          key: 'paymentMode',
+          label: <Link to={'/payment/mode'}>Payments Mode</Link>,
+        },
+      ],
     },
   ];
 
   useEffect(() => {
-    if (location)
+    if (location) {
       if (currentPath !== location.pathname) {
         if (location.pathname === '/') {
           setCurrentPath('dashboard');
-        } else setCurrentPath(location.pathname.slice(1));
+        } else {
+          setCurrentPath(location.pathname.slice(1));
+        }
       }
+    }
   }, [location, currentPath]);
 
   useEffect(() => {
@@ -118,6 +197,7 @@ function Sidebar({ collapsible, isMobile = false }) {
     }, 200);
     return () => clearTimeout(timer);
   }, [isNavMenuClose]);
+
   const onCollapse = () => {
     navMenu.collapse();
   };
@@ -138,9 +218,10 @@ function Sidebar({ collapsible, isMobile = false }) {
         borderRadius: isMobile ? 0 : '14px',
         background: '#ffffff',
         border: isMobile ? 'none' : '1px solid #edf2f7',
-        boxShadow: isMobile ? 'none' : '0 2px 12px rgba(0, 0, 0, 0.03)',
+        boxShadow: isMobile ? 'none' : '0 2px 10px rgba(0, 0, 0, 0.03)',
         zIndex: 100,
-        overflow: 'hidden',
+        overflowY: 'auto',
+        overflowX: 'hidden',
       }}
       theme={'light'}
     >
@@ -178,10 +259,12 @@ function Sidebar({ collapsible, isMobile = false }) {
         mode="inline"
         theme={'light'}
         selectedKeys={[currentPath]}
+        defaultOpenKeys={['settingsGroup']}
         style={{
           width: '100%',
           borderRight: 'none',
           background: 'transparent',
+          paddingBottom: '20px',
         }}
       />
     </Sider>
@@ -204,13 +287,12 @@ function MobileSidebar() {
         size="large"
         onClick={showDrawer}
         className="mobile-sidebar-btn"
-        style={{ ['marginLeft']: 25 }}
+        style={{ marginLeft: 25 }}
       >
         <MenuOutlined style={{ fontSize: 18 }} />
       </Button>
       <Drawer
         width={250}
-        // style={{ backgroundColor: 'rgba(255, 255, 255, 1)' }}
         placement={'left'}
         closable={false}
         onClose={onClose}

@@ -1,2 +1,10 @@
 const createUserController = require('@/controllers/middlewaresControllers/createUserController');
-module.exports = createUserController('Admin');
+const createCRUDController = require('@/controllers/middlewaresControllers/createCRUDController');
+
+const userController = createUserController('Admin');
+const crudController = createCRUDController('Admin');
+
+module.exports = {
+  ...crudController,
+  ...userController,
+};

@@ -39,6 +39,12 @@ export default function DashboardModule() {
   } = useOnFetch();
 
   const {
+    result: offerResult,
+    isLoading: offerLoading,
+    onFetch: fetchOffersStats,
+  } = useOnFetch();
+
+  const {
     result: paymentResult,
     isLoading: paymentLoading,
     onFetch: fetchPaymentsStats,
@@ -54,6 +60,7 @@ export default function DashboardModule() {
     if (activeCurrency) {
       fetchInvoicesStats(getStatsData({ entity: 'invoice', currency: activeCurrency }));
       fetchQuotesStats(getStatsData({ entity: 'quote', currency: activeCurrency }));
+      fetchOffersStats(getStatsData({ entity: 'offer', currency: activeCurrency }));
       fetchPaymentsStats(getStatsData({ entity: 'payment', currency: activeCurrency }));
     }
   }, [activeCurrency]);
@@ -162,38 +169,19 @@ export default function DashboardModule() {
     return found ? { tag: def.tag, value: found.percentage } : def;
   });
 
-  const totalInvoiced = invoiceResult?.total || 0;
-  const totalPaid = paymentResult?.total || 0;
-  const paidPercent = totalInvoiced > 0 ? Math.round((totalPaid / totalInvoiced) * 100) : 0;
-
-  const collectionStats = [
-    { tag: 'paid', label: 'Collected Rate', value: Math.min(100, paidPercent) },
-    {
-      tag: 'partially',
-      label: 'Partially Paid',
-      value: invoiceStats.find((s) => s.tag === 'partially')?.value || 0,
-    },
-    {
-      tag: 'pending',
-      label: 'Pending Due',
-      value: invoiceStats.find((s) => s.tag === 'pending')?.value || 0,
-    },
-    {
-      tag: 'unpaid',
-      label: 'Unpaid Balance',
-      value: invoiceStats.find((s) => s.tag === 'unpaid')?.value || 0,
-    },
-    {
-      tag: 'overdue',
-      label: 'Overdue Balance',
-      value: invoiceStats.find((s) => s.tag === 'overdue')?.value || 0,
-    },
-    {
-      tag: 'accepted',
-      label: 'Quote Conversion',
-      value: quoteStats.find((s) => s.tag === 'accepted')?.value || 0,
-    },
-  ];
+  const offerStats = [
+    { tag: 'draft', value: 0 },
+    { tag: 'pending', value: 0 },
+    { tag: 'sent', value: 0 },
+    { tag: 'declined', value: 0 },
+    { tag: 'accepted', value: 0 },
+    { tag: 'expired', value: 0 },
+  ].map((def) => {
+    const found = offerResult?.performance?.find(
+      (p) => p.status?.toLowerCase() === def.tag
+    );
+    return found ? { tag: def.tag, value: found.percentage } : def;
+  });
 
   if (!money_format_settings) return <></>;
 
@@ -226,18 +214,6 @@ export default function DashboardModule() {
           }}
         />
         <SummaryCard
-          title="Total Invoiced"
-          themeColor="purple"
-          isLoading={invoiceLoading}
-          data={invoiceResult?.total || 0}
-          span={{ xs: 24, sm: 12, md: 12, lg: 6 }}
-          onFilterChange={(filterType) => {
-            fetchInvoicesStats(
-              getStatsData({ entity: 'invoice', currency: activeCurrency, type: filterType })
-            );
-          }}
-        />
-        <SummaryCard
           title="Quote"
           themeColor="blue"
           isLoading={quoteLoading}
@@ -246,6 +222,18 @@ export default function DashboardModule() {
           onFilterChange={(filterType) => {
             fetchQuotesStats(
               getStatsData({ entity: 'quote', currency: activeCurrency, type: filterType })
+            );
+          }}
+        />
+        <SummaryCard
+          title="Offer"
+          themeColor="purple"
+          isLoading={offerLoading}
+          data={offerResult?.total || 0}
+          span={{ xs: 24, sm: 12, md: 12, lg: 6 }}
+          onFilterChange={(filterType) => {
+            fetchOffersStats(
+              getStatsData({ entity: 'offer', currency: activeCurrency, type: filterType })
             );
           }}
         />
@@ -283,9 +271,9 @@ export default function DashboardModule() {
               </Col>
               <Col xs={24} sm={8}>
                 <PreviewCard
-                  title="Collection & Revenue"
-                  isLoading={invoiceLoading || paymentLoading}
-                  statistics={collectionStats}
+                  title="Quotes For Leads"
+                  isLoading={offerLoading}
+                  statistics={offerStats}
                 />
               </Col>
             </Row>

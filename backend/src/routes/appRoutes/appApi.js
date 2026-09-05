@@ -3,7 +3,11 @@ const { catchErrors } = require('@/handlers/errorHandlers');
 const router = express.Router();
 
 const appControllers = require('@/controllers/appControllers');
+const aiController = require('@/controllers/appControllers/aiController');
 const { routesList } = require('@/models/utils');
+
+// 🤖 AI Chatbot Copilot Endpoint
+router.route('/ai/chat').post(catchErrors(aiController.chat));
 
 const routerApp = (entity, controller) => {
   router.route(`/${entity}/create`).post(catchErrors(controller['create']));
@@ -27,7 +31,9 @@ const routerApp = (entity, controller) => {
 
 routesList.forEach(({ entity, controllerName }) => {
   const controller = appControllers[controllerName];
-  routerApp(entity, controller);
+  if (controller) {
+    routerApp(entity, controller);
+  }
 });
 
 module.exports = router;

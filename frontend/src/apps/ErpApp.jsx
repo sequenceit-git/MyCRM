@@ -6,6 +6,7 @@ import { Layout } from 'antd';
 import Navigation from '@/apps/Navigation/NavigationContainer';
 import HeaderContent from '@/apps/Header/HeaderContainer';
 import PageLoader from '@/components/PageLoader';
+// import AiChatbotSidebar from '@/components/AiChatbot/AiChatbotSidebar';
 
 import { settingsAction } from '@/redux/settings/actions';
 import { selectSettings } from '@/redux/settings/selectors';
@@ -25,7 +26,7 @@ export default function ErpCrmApp() {
   const { isSuccess: settingIsloaded } = useSelector(selectSettings);
 
   return (
-    <Layout hasSider>
+    <Layout hasSider style={{ minHeight: '100vh', background: '#f0f5fa' }}>
       <Navigation />
 
       {isMobile ? (
@@ -59,6 +60,10 @@ export default function ErpCrmApp() {
           </Content>
         </Layout>
       )}
+
+      {/* Global AI Assistant Sidebar (Disabled for now) */}
+      {/* <AiChatbotSidebar /> */}
     </Layout>
   );
 }
+
