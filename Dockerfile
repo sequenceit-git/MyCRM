@@ -1,10 +1,10 @@
 # Stage 1: Build Vite React Frontend
-FROM node:20-alpine AS frontend-build
+FROM node:22-alpine AS frontend-build
 
 WORKDIR /app/frontend
 
 COPY frontend/package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY frontend/ ./
 
@@ -13,13 +13,13 @@ ENV VITE_BACKEND_SERVER=/
 RUN npm run build
 
 # Stage 2: Production Single Container Application
-FROM node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 
 # Copy backend package files and install production dependencies
 COPY backend/package*.json ./backend/
-RUN cd backend && npm ci --only=production
+RUN cd backend && npm install --omit=dev
 
 # Copy backend source code
 COPY backend/ ./backend/
