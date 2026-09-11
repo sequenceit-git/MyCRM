@@ -6,7 +6,7 @@ import { Layout } from 'antd';
 import Navigation from '@/apps/Navigation/NavigationContainer';
 import HeaderContent from '@/apps/Header/HeaderContainer';
 import PageLoader from '@/components/PageLoader';
-// import AiChatbotSidebar from '@/components/AiChatbot/AiChatbotSidebar';
+import AiChatbotSidebar from '@/components/AiChatbot/AiChatbotSidebar';
 
 import { settingsAction } from '@/redux/settings/actions';
 import { selectSettings } from '@/redux/settings/selectors';
@@ -61,8 +61,8 @@ export default function ErpCrmApp() {
         </Layout>
       )}
 
-      {/* Global AI Assistant Sidebar (Disabled for now) */}
-      {/* <AiChatbotSidebar /> */}
+      {/* Global AI Assistant Floating Overlay */}
+      <AiChatbotSidebar />
     </Layout>
   );
 }

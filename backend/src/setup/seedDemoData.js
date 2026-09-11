@@ -105,6 +105,38 @@ async function seedMassiveData() {
         await Setting.insertMany(settingFiles);
         console.log(`👍 Default Settings seeded (${settingFiles.length} keys)`);
       }
+    } else {
+      // Ensure AI settings exist even if other settings were previously seeded
+      const aiKeySetting = await Setting.findOne({ settingKey: 'openai_api_key' });
+      if (!aiKeySetting) {
+        await Setting.create({
+          settingCategory: 'ai_settings',
+          settingKey: 'openai_api_key',
+          settingValue: '',
+          valueType: 'string',
+          isPrivate: false,
+        });
+      }
+      const aiModelSetting = await Setting.findOne({ settingKey: 'ai_model' });
+      if (!aiModelSetting) {
+        await Setting.create({
+          settingCategory: 'ai_settings',
+          settingKey: 'ai_model',
+          settingValue: 'gpt-4o-mini',
+          valueType: 'string',
+          isPrivate: false,
+        });
+      }
+      const customModelSetting = await Setting.findOne({ settingKey: 'custom_ai_model' });
+      if (!customModelSetting) {
+        await Setting.create({
+          settingCategory: 'ai_settings',
+          settingKey: 'custom_ai_model',
+          settingValue: '',
+          valueType: 'string',
+          isPrivate: false,
+        });
+      }
     }
 
     // 4. SEED PAYMENT MODES

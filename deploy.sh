@@ -33,20 +33,26 @@ echo "🐳 Pulling latest images & starting application containers..."
 docker compose pull app 2>/dev/null || true
 docker compose up -d --build --remove-orphans
 
+# Determine if we have a TTY for interactive commands
+EXEC_FLAGS="-i"
+if [ -t 0 ]; then
+    EXEC_FLAGS="-it"
+fi
+
 # 5. Handle optional command line flags
 for arg in "$@"; do
     case $arg in
         --setup)
             echo "⚙️ Running core setup script..."
-            docker exec -it mycrm-app npm run setup
+            docker exec $EXEC_FLAGS mycrm-app npm run setup
             ;;
         --seed)
             echo "🌱 Running demo seed script..."
-            docker exec -it mycrm-app npm run seed
+            docker exec $EXEC_FLAGS mycrm-app npm run seed
             ;;
         --setup-guest)
             echo "👤 Setting up guest admin account..."
-            docker exec -it mycrm-app npm run setup-guest
+            docker exec $EXEC_FLAGS mycrm-app npm run setup-guest
             ;;
         --help)
             echo "Usage: ./deploy.sh [OPTIONS]"

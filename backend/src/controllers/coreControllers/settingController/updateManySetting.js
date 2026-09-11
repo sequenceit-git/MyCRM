@@ -14,12 +14,30 @@ const updateManySetting = async (req, res) => {
       break;
     }
 
-    const { settingKey, settingValue } = setting;
+    const { settingKey, settingValue, settingCategory } = setting;
+
+    const updateDoc = {
+      $set: {
+        settingValue: settingValue,
+        removed: false,
+        enabled: true,
+      },
+    };
+
+    if (settingCategory) {
+      updateDoc.$setOnInsert = {
+        settingCategory: settingCategory,
+        valueType: typeof settingValue === 'boolean' ? 'boolean' : 'string',
+        isPrivate: false,
+        isCoreSetting: false,
+      };
+    }
 
     updateDataArray.push({
       updateOne: {
         filter: { settingKey: settingKey },
-        update: { settingValue: settingValue },
+        update: updateDoc,
+        upsert: true,
       },
     });
   }
@@ -40,17 +58,21 @@ const updateManySetting = async (req, res) => {
   }
   const result = await Model.bulkWrite(updateDataArray);
 
-  if (!result || result.nMatched < 1) {
+  const matched = result?.nMatched || result?.matchedCount || 0;
+  const upserted = result?.nUpserted || result?.upsertedCount || 0;
+  const modified = result?.nModified || result?.modifiedCount || 0;
+
+  if (matched < 1 && upserted < 1 && modified < 1) {
     return res.status(404).json({
       success: false,
       result: null,
-      message: 'No settings found by to update',
+      message: 'No settings found to update',
     });
   } else {
     return res.status(200).json({
       success: true,
       result: [],
-      message: 'we update all settings',
+      message: 'Settings updated successfully',
     });
   }
 };

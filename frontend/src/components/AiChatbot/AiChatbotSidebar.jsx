@@ -27,6 +27,8 @@ import {
 } from '@ant-design/icons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { useSelector } from 'react-redux';
+import { selectAiSettings } from '@/redux/settings/selectors';
 import logoIcon from '@/style/images/logo-icon.svg';
 import { request } from '@/request';
 import { useAppContext } from '@/context/appContext';
@@ -92,12 +94,20 @@ const defaultWelcomeMessage = {
 };
 
 export default function AiChatbotSidebar() {
-  // Disabled for now
-  return null;
-
   const { state: stateApp, appContextAction } = useAppContext();
   const isOpen = stateApp?.isAiSidebarOpen ?? false;
   const { isMobile } = useResponsive();
+  const aiSettings = useSelector(selectAiSettings);
+
+  const localModel = localStorage.getItem('mycrm_local_ai_model');
+  const localCustomModel = localStorage.getItem('mycrm_local_custom_ai_model');
+  const isGuestMode = sessionStorage.getItem('isGuestMode') === 'true';
+
+  const activeModel = isGuestMode && localModel
+    ? (localModel === 'custom' ? localCustomModel || 'Custom' : localModel)
+    : (aiSettings?.ai_model === 'custom'
+        ? (aiSettings?.custom_ai_model || 'Custom')
+        : (aiSettings?.ai_model || localModel || 'GPT-4o Mini'));
 
   const getInitialMessages = () => {
     try {
@@ -112,13 +122,74 @@ export default function AiChatbotSidebar() {
     return [defaultWelcomeMessage];
   };
 
-  const [isWide, setIsWide] = useState(false);
+  const getInitialWidth = () => {
+    try {
+      const saved = localStorage.getItem('mycrm_ai_sidebar_width');
+      if (saved) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed >= 340 && parsed <= 1200) {
+          return parsed;
+        }
+      }
+    } catch (e) {}
+    return 400;
+  };
+
+  const [customWidth, setCustomWidth] = useState(getInitialWidth);
+  const [isDragging, setIsDragging] = useState(false);
+  const isResizingRef = useRef(false);
+
   const [messages, setMessages] = useState(getInitialMessages);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
 
   const messagesEndRef = useRef(null);
+
+  // Mouse Drag to Resize from Left Edge
+  const handleMouseDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    isResizingRef.current = true;
+    setIsDragging(true);
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (!isResizingRef.current) return;
+      const newWidth = window.innerWidth - e.clientX;
+      const minWidth = 340;
+      const maxWidth = Math.max(minWidth, Math.min(window.innerWidth - 60, 1100));
+      if (newWidth >= minWidth && newWidth <= maxWidth) {
+        setCustomWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      if (isResizingRef.current) {
+        isResizingRef.current = false;
+        setIsDragging(false);
+        document.body.style.userSelect = '';
+        document.body.style.cursor = '';
+        setCustomWidth((curr) => {
+          localStorage.setItem('mycrm_ai_sidebar_width', curr.toString());
+          return curr;
+        });
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    };
+  }, []);
 
   // Persist messages to LocalStorage
   useEffect(() => {
@@ -166,11 +237,18 @@ export default function AiChatbotSidebar() {
         content: m.content,
       }));
 
+      const localApiKey = localStorage.getItem('mycrm_local_openai_key');
+      const localModelChoice = localStorage.getItem('mycrm_local_ai_model');
+      const localCustomModelChoice = localStorage.getItem('mycrm_local_custom_ai_model');
+
       const res = await request.post({
         entity: 'ai/chat',
         jsonData: {
           message: queryText,
           conversationHistory: history,
+          clientApiKey: localApiKey || undefined,
+          clientModel: localModelChoice || undefined,
+          clientCustomModel: localCustomModelChoice || undefined,
         },
       });
 
@@ -249,8 +327,47 @@ export default function AiChatbotSidebar() {
         height: '100%',
         background: '#ffffff',
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
+      {/* Draggable Left Resize Handle (Desktop Only) */}
+      {!isMobile && (
+        <div
+          onMouseDown={handleMouseDown}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: '10px',
+            cursor: 'col-resize',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: isDragging ? 'rgba(22, 119, 255, 0.2)' : 'transparent',
+            transition: isDragging ? 'none' : 'background 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            if (!isDragging) e.currentTarget.style.background = 'rgba(22, 119, 255, 0.12)';
+          }}
+          onMouseLeave={(e) => {
+            if (!isDragging) e.currentTarget.style.background = 'transparent';
+          }}
+          title="Drag left/right to resize AI sidebar"
+        >
+          <div
+            style={{
+              width: '4px',
+              height: '44px',
+              borderRadius: '2px',
+              background: isDragging ? '#1677ff' : '#cbd5e1',
+              boxShadow: '0 0 3px rgba(0,0,0,0.18)',
+            }}
+          />
+        </div>
+      )}
+
       {/* 1. Header */}
       <div
         style={{
@@ -282,7 +399,7 @@ export default function AiChatbotSidebar() {
               color: '#ffffff',
             }}
           >
-            GPT
+            {activeModel}
           </Tag>
         </div>
 
@@ -297,18 +414,22 @@ export default function AiChatbotSidebar() {
           </Tooltip>
 
           {!isMobile && (
-            <Tooltip title={isWide ? 'Standard Width (380px)' : 'Expand Width (520px)'}>
+            <Tooltip title={customWidth > 450 ? 'Default Width (400px)' : 'Expand Width (620px)'}>
               <Button
                 type="text"
                 size="small"
                 icon={
-                  isWide ? (
+                  customWidth > 450 ? (
                     <FullscreenExitOutlined style={{ color: '#ffffff' }} />
                   ) : (
                     <FullscreenOutlined style={{ color: '#ffffff' }} />
                   )
                 }
-                onClick={() => setIsWide(!isWide)}
+                onClick={() => {
+                  const nextWidth = customWidth > 450 ? 400 : 620;
+                  setCustomWidth(nextWidth);
+                  localStorage.setItem('mycrm_ai_sidebar_width', nextWidth.toString());
+                }}
               />
             </Tooltip>
           )}
@@ -708,62 +829,44 @@ export default function AiChatbotSidebar() {
     </div>
   );
 
-  // If Mobile, render inside Ant Design Drawer
-  if (isMobile) {
-    return (
-      <>
-        {!isOpen && (
-          <div
-            onClick={handleToggle}
-            style={{
-              position: 'fixed',
-              bottom: '20px',
-              right: '20px',
-              zIndex: 999,
-              cursor: 'pointer',
-            }}
-          >
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #1677ff 0%, #722ed1 100%)',
-                borderRadius: '50px',
-                padding: '10px 16px',
-                color: '#ffffff',
-                boxShadow: '0 8px 24px rgba(22, 119, 255, 0.4)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontWeight: '700',
-                fontSize: '13px',
-              }}
-            >
-              <img src={logoIcon} alt="MyCRM Logo" style={{ width: '20px', height: '20px' }} />
-              <span>AI Copilot</span>
-            </div>
-          </div>
-        )}
-
-        <Drawer
-          placement="right"
-          width="100%"
-          closable={false}
-          onClose={handleClose}
-          open={isOpen}
-          styles={{ body: { padding: 0 } }}
-        >
-          {ChatContent}
-        </Drawer>
-      </>
-    );
-  }
-
-  // Desktop Sider / Docked Sidebar
-  const sidebarWidth = isWide ? 520 : 380;
+  const sidebarWidth = isMobile ? '100%' : customWidth;
 
   return (
     <>
-      {/* Floating Expand Tab when sidebar is closed */}
-      {!isOpen && (
+      {/* 1. Mobile Floating Button when closed */}
+      {!isOpen && isMobile && (
+        <div
+          onClick={handleToggle}
+          style={{
+            position: 'fixed',
+            bottom: '20px',
+            right: '20px',
+            zIndex: 999,
+            cursor: 'pointer',
+          }}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #1677ff 0%, #722ed1 100%)',
+              borderRadius: '50px',
+              padding: '10px 16px',
+              color: '#ffffff',
+              boxShadow: '0 8px 24px rgba(22, 119, 255, 0.4)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontWeight: '700',
+              fontSize: '13px',
+            }}
+          >
+            <img src={logoIcon} alt="MyCRM Logo" style={{ width: '20px', height: '20px' }} />
+            <span>AI Copilot</span>
+          </div>
+        </div>
+      )}
+
+      {/* 2. Desktop Floating Expand Tab when sidebar is closed */}
+      {!isOpen && !isMobile && (
         <div
           onClick={handleToggle}
           style={{
@@ -793,7 +896,7 @@ export default function AiChatbotSidebar() {
             e.currentTarget.style.paddingRight = '8px';
             e.currentTarget.style.boxShadow = '-4px 4px 16px rgba(22, 119, 255, 0.35)';
           }}
-          title="Open AI Copilot Sidebar"
+          title="Open AI Copilot"
         >
           <LeftOutlined style={{ fontSize: '12px' }} />
           <img src={logoIcon} alt="AI" style={{ width: '20px', height: '20px' }} />
@@ -810,30 +913,25 @@ export default function AiChatbotSidebar() {
         </div>
       )}
 
-      {/* Docked Right Sidebar */}
-      <div
-        style={{
-          width: isOpen ? `${sidebarWidth}px` : '0px',
-          minWidth: isOpen ? `${sidebarWidth}px` : '0px',
-          height: 'calc(100vh - 36px)',
-          position: 'sticky',
-          top: '18px',
-          right: '20px',
-          margin: isOpen ? '18px 20px 18px 0' : 0,
-          borderRadius: '14px',
-          background: '#ffffff',
-          border: isOpen ? '1px solid #edf2f7' : 'none',
-          boxShadow: isOpen ? '0 2px 12px rgba(0, 0, 0, 0.04)' : 'none',
-          zIndex: 99,
-          overflow: 'hidden',
-          transition: 'width 0.25s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1), margin 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-          display: 'flex',
-          flexDirection: 'column',
-          flexShrink: 0,
+      {/* 3. Non-Intrusive Floating Overlay Drawer (Does NOT take up layout space) */}
+      <Drawer
+        placement="right"
+        width={sidebarWidth}
+        closable={false}
+        onClose={handleClose}
+        open={isOpen}
+        mask={isMobile} // On desktop: no background mask so CRM records remain fully clickable & viewable
+        styles={{
+          body: { padding: 0, height: '100%', overflow: 'hidden' },
+          content: {
+            boxShadow: '-6px 0 28px rgba(0, 0, 0, 0.14)',
+            borderLeft: '1px solid #edf2f7',
+          },
+          wrapper: isDragging ? { transition: 'none' } : undefined,
         }}
       >
-        {isOpen && ChatContent}
-      </div>
+        {ChatContent}
+      </Drawer>
     </>
   );
 }

@@ -11,16 +11,20 @@ import {
   ShopOutlined,
   GlobalOutlined,
   DollarOutlined,
+  RobotOutlined,
 } from '@ant-design/icons';
 
 import { selectCurrentAdmin } from '@/redux/auth/selectors';
 import { FILE_BASE_URL } from '@/config/serverApiConfig';
 import useLanguage from '@/locale/useLanguage';
+import { useAppContext } from '@/context/appContext';
 
 export default function HeaderContent() {
   const currentAdmin = useSelector(selectCurrentAdmin);
   const { Header } = Layout;
   const navigate = useNavigate();
+  const { appContextAction, state: stateApp } = useAppContext();
+  const isAiOpen = stateApp?.isAiSidebarOpen ?? false;
 
 
   const isGuestMode =
@@ -266,7 +270,26 @@ export default function HeaderContent() {
         </div>
       </Dropdown>
 
-      {/* 4. User Profile Dropdown */}
+      {/* 4. AI Copilot Toggle Button */}
+      <div
+        style={{
+          ...pillButtonStyle,
+          background: isAiOpen
+            ? 'linear-gradient(135deg, #1677ff 0%, #722ed1 100%)'
+            : 'linear-gradient(135deg, rgba(22, 119, 255, 0.08) 0%, rgba(114, 46, 209, 0.08) 100%)',
+          borderColor: isAiOpen ? 'transparent' : '#d3adf7',
+          color: isAiOpen ? '#ffffff' : '#722ed1',
+          boxShadow: isAiOpen ? '0 2px 8px rgba(114, 46, 209, 0.3)' : pillButtonStyle.boxShadow,
+        }}
+        className="top-nav-pill"
+        onClick={() => appContextAction.aiSidebar.toggle()}
+        title="Toggle AI Copilot"
+      >
+        <RobotOutlined style={{ color: isAiOpen ? '#ffffff' : '#722ed1', fontSize: '15px' }} />
+        <span>AI Copilot</span>
+      </div>
+
+      {/* 5. User Profile Dropdown */}
       <Dropdown
         menu={{
           items: profileMenuItems,

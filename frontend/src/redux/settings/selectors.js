@@ -31,3 +31,9 @@ export const selectCompanySettings = createSelector(
   [selectCurrentSettings],
   (settings) => settings.company_settings
 );
+
+export const selectAiSettings = createSelector(
+  [selectCurrentSettings],
+  (settings) => settings.ai_settings
+);
+

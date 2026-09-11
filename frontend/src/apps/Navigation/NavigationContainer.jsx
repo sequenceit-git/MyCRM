@@ -135,6 +135,10 @@ function Sidebar({ collapsible, isMobile = false }) {
           label: <Link to={'/settings'}>Settings</Link>,
         },
         {
+          key: 'aiSettings',
+          label: <Link to={'/settings/ai'}>AI Settings</Link>,
+        },
+        {
           key: 'admin',
           label: <Link to={'/admin'}>Admin</Link>,
         },

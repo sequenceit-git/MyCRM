@@ -40,6 +40,7 @@ import ApiKeySettings from '@/pages/Settings/ApiKeySettings';
 import EmailTemplateSettings from '@/pages/Settings/EmailTemplateSettings';
 import MultiCompanySettings from '@/pages/Settings/MultiCompanySettings';
 import PublicFormSettings from '@/pages/Settings/PublicFormSettings';
+import AiSettings from '@/pages/Settings/AiSettings';
 import Profile from '@/pages/Profile';
 import About from '@/pages/About';
 
@@ -177,6 +178,10 @@ let routes = {
     {
       path: '/settings/api-key',
       element: <ApiKeySettings />,
+    },
+    {
+      path: '/settings/ai',
+      element: <AiSettings />,
     },
     {
       path: '/settings/email-template',

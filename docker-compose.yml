@@ -21,6 +21,8 @@ services:
       - SECRET=mycrm_super_secret_jwt_key_2026
       - JWT_SECRET=mycrm_jwt_secret_token_2026
       - NODE_ENV=production
+    volumes:
+      - app_uploads:/app/backend/src/public/uploads
     depends_on:
       - mongodb
     networks:
@@ -36,6 +38,7 @@ services:
 
 volumes:
   mongodb_data:
+  app_uploads:
 
 networks:
   mycrm-net:

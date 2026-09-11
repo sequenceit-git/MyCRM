@@ -1,0 +1,23 @@
+[
+  {
+    "settingCategory": "ai_settings",
+    "settingKey": "openai_api_key",
+    "settingValue": "",
+    "valueType": "string",
+    "isPrivate": false
+  },
+  {
+    "settingCategory": "ai_settings",
+    "settingKey": "ai_model",
+    "settingValue": "gpt-4o-mini",
+    "valueType": "string",
+    "isPrivate": false
+  },
+  {
+    "settingCategory": "ai_settings",
+    "settingKey": "custom_ai_model",
+    "settingValue": "",
+    "valueType": "string",
+    "isPrivate": false
+  }
+]
