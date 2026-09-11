@@ -56,6 +56,24 @@ export default function AiSettingForm({ isGuestMode = false }) {
       ),
     },
     {
+      value: 'o3-mini',
+      label: (
+        <Space>
+          <span style={{ fontWeight: 600 }}>o3-mini</span>
+          <Tag color="geekblue" style={{ fontSize: 11, borderRadius: 4 }}>Reasoning</Tag>
+        </Space>
+      ),
+    },
+    {
+      value: 'o1',
+      label: (
+        <Space>
+          <span style={{ fontWeight: 600 }}>o1</span>
+          <Tag color="gold" style={{ fontSize: 11, borderRadius: 4 }}>Deep Reasoning</Tag>
+        </Space>
+      ),
+    },
+    {
       value: 'custom',
       label: (
         <Space>

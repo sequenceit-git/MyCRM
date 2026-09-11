@@ -1060,6 +1060,51 @@ Here are a few things you can ask me:
   };
 }
 
+// Helper to detect if a model is an OpenAI reasoning model (e.g. o1, o1-mini, o1-preview, o3-mini, etc.)
+const isReasoningModel = (model) => {
+  if (!model || typeof model !== 'string') return false;
+  const m = model.toLowerCase().trim();
+  return /^o\d/i.test(m) || m.includes('reasoning');
+};
+
+// Safe completion execution with automatic error recovery for reasoning models and parameter mismatches
+const executeChatCompletionWithRetry = async (openai, params) => {
+  try {
+    return await openai.chat.completions.create(params);
+  } catch (err) {
+    const errMsg = (err?.message || '').toLowerCase();
+
+    // 1. If temperature is unsupported for this model (e.g. o1, o3-mini), retry without temperature
+    if (errMsg.includes('temperature') && params.temperature !== undefined) {
+      console.warn(`[AI Controller] Model ${params.model} rejected temperature (${err.message}). Retrying without temperature...`);
+      const retryParams = { ...params };
+      delete retryParams.temperature;
+      return await executeChatCompletionWithRetry(openai, retryParams);
+    }
+
+    // 2. If tools or tool_choice is not supported for this model (e.g. o1-mini, o1-preview)
+    if ((errMsg.includes('tools') || errMsg.includes('tool_choice')) && errMsg.includes('not supported') && params.tools) {
+      console.warn(`[AI Controller] Model ${params.model} does not support tools (${err.message}). Retrying without tools...`);
+      const retryParams = { ...params };
+      delete retryParams.tools;
+      delete retryParams.tool_choice;
+      return await executeChatCompletionWithRetry(openai, retryParams);
+    }
+
+    // 3. If system role is rejected by model, change role to developer
+    if (errMsg.includes('role') && errMsg.includes('system')) {
+      console.warn(`[AI Controller] Model ${params.model} rejected system role. Retrying with developer role...`);
+      const retryParams = {
+        ...params,
+        messages: params.messages.map((m) => (m.role === 'system' ? { ...m, role: 'developer' } : m)),
+      };
+      return await executeChatCompletionWithRetry(openai, retryParams);
+    }
+
+    throw err;
+  }
+};
+
 // Helper to load dynamic AI Settings from MongoDB
 const getAiConfig = async () => {
   try {
@@ -1148,9 +1193,12 @@ const chat = async (req, res) => {
       try {
         const openai = new OpenAI({ apiKey: openAiApiKey });
 
+        const isReasoning = isReasoningModel(selectedModel);
+        const systemRole = isReasoning ? 'developer' : 'system';
+
         const messages = [
           {
-            role: 'system',
+            role: systemRole,
             content: `You are MyCRM AI, an intelligent executive CRM/ERP copilot with direct database tool access.
 TOOL GUIDELINES:
 - For questions about "how many times interacts all", "client interactions", "touchpoints", "link all sections data as like invoice, quotes", or linking quotes, invoices, orders and payments for a client, ALWAYS call 'get_client_interactions'.
@@ -1175,15 +1223,16 @@ Always format answers with markdown tables, bold values, and concise summaries.`
 
         const actionsTaken = [];
 
-        // First tool-calling step with dynamic model
-        let response = await openai.chat.completions.create({
+        // First tool-calling step with dynamic model and retry resilience
+        const firstParams = {
           model: selectedModel,
           messages,
           tools: toolDefinitions,
           tool_choice: 'auto',
-          temperature: 0.3,
-        });
+          ...(!isReasoning ? { temperature: 0.3 } : {}),
+        };
 
+        let response = await executeChatCompletionWithRetry(openai, firstParams);
         let responseMessage = response.choices[0].message;
 
         // If model wants to call tools
@@ -1206,11 +1255,13 @@ Always format answers with markdown tables, bold values, and concise summaries.`
           }
 
           // Second completion with tool execution results
-          const secondResponse = await openai.chat.completions.create({
+          const secondParams = {
             model: selectedModel,
             messages,
-            temperature: 0.3,
-          });
+            ...(!isReasoning ? { temperature: 0.3 } : {}),
+          };
+
+          const secondResponse = await executeChatCompletionWithRetry(openai, secondParams);
 
           return res.status(200).json({
             success: true,
